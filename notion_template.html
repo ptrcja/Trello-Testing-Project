@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trello Testing Portfolio - Patrycja Gontarek</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #191919;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+        }
+        
+        .template-nav {
+            background: #2a2a2a;
+            padding: 15px 0;
+            border-bottom: 2px solid #3a3a3a;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 0 20px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: #3a3a3a;
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .nav-btn:hover, .nav-btn.active {
+            background: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .template-section {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .template-section.active {
+            display: block;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* Main Page Styles */
+        .hero-section {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 50px 30px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 6s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .stat-item {
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            color: #ffffff;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-card {
+            background: #2a2a2a;
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid #3a3a3a;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            border-color: var(--accent-color, #667eea);
+        }
+        
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--accent-color, #667eea);
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .card-completed { --accent-color: #4CAF50; }
+        .card-progress { --accent-color: #FF9800; }
+        .card-pending { --accent-color: #f44336; }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            background: #3a3a3a;
+            border-radius: 10px;
+            height: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .progress-completed { background: linear-gradient(90deg, #4CAF50, #66BB6A); }
+        .progress-partial { background: linear-gradient(90deg, #FF9800, #FFB74D); }
+        
+        /* Test Case Detail Styles */
+        .test-case-detail {
+            background: #2a2a2a;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 1px solid #3a3a3a;
+        }
+        
+        .test-case-header {
+            border-bottom: 2px solid #3a3a3a;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .test-case-id-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .test-case-subtitle {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+        
+        .test-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .meta-item {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #3a3a3a;
+        }
+        
+        .meta-label {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        
+        .meta-value {
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .section-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #667eea;
+            margin: 30px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .test-steps-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .test-steps-table th,
+        .test-steps-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        
+        .test-steps-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .test-steps-table tr:hover {
+            background: #2a2a2a;
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-pass { 
+            background: #4CAF50; 
+            color: white;
+        }
+        
+        .status-partial { 
+            background: #FF9800; 
+            color: white;
+        }
+        
+        .findings-section {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .finding-item {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        
+        .finding-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .finding-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .finding-content {
+            color: #ddd;
+            line-height: 1.6;
+        }
+        
+        /* Bug Report Styles */
+        .bug-report {
+            background: #2a1a1a;
+            border: 2px solid #f44336;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .bug-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .bug-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #f44336;
+        }
+        
+        .bug-badges {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .bug-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .severity-medium {
+            background: #FF9800;
+            color: white;
+        }
+        
+        .priority-high {
+            background: #f44336;
+            color: white;
+        }
+        
+        .bug-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .bug-detail-card {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #3a3a3a;
+        }
+        
+        .bug-detail-title {
+            font-weight: 600;
+            color: #f44336;
+            margin-bottom: 10px;
+        }
+        
+        /* Page Header Styles */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .back-nav {
+            background: #3a3a3a;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-nav:hover {
+            background: #667eea;
+            transform: translateX(-5px);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-container {
+                gap: 8px;
+            }
+            
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .test-steps-table {
+                font-size: 0.9rem;
+            }
+            
+            .test-steps-table th,
+            .test-steps-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="template-nav">
+        <div class="nav-container">
+            <button class="nav-btn active" onclick="showTemplate('main')">🏠 Main</button>
+            <button class="nav-btn" onclick="showTemplate('testplan')">📋 Test Plan</button>
+            <button class="nav-btn" onclick="showTemplate('tc001')">TC001</button>
+            <button class="nav-btn" onclick="showTemplate('tc002')">TC002</button>
+            <button class="nav-btn" onclick="showTemplate('tc003')">TC003</button>
+            <button class="nav-btn" onclick="showTemplate('tc004')">TC004</button>
+            <button class="nav-btn" onclick="showTemplate('tc005')">TC005</button>
+            <button class="nav-btn" onclick="showTemplate('bug001')">🐛 BUG_001</button>
+        </div>
+    </div>
+
+    <!-- MAIN PAGE TEMPLATE -->
+    <div id="main" class="template-section active">
+        <div class="container">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">🧪 Trello Testing Project</h1>
+                    <p class="hero-subtitle">Comprehensive QA Testing Suite for Trello Web Application - Professional Portfolio Showcase</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">5</span>
+                            <span class="stat-label">Test Cases</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">80%</span>
+                            <span class="stat-label">Pass Rate</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">1</span>
+                            <span class="stat-label">Bug Found</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Coverage</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card card-completed">
+                    <div class="card-header">
+                        <span class="card-icon">✅</span>
+                        <span class="card-title">Authentication Tests</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-completed" style="width: 100%;"></div>
+                    </div>
+                    <p><strong>3/3 test cases completed</strong></p>
+                    <ul style="margin-top: 15px; padding-left: 20px; line-height: 1.6;">
+                        <li><a href="#" onclick="showTemplate('tc001')" style="color: #4CAF50; text-decoration: none;">✅ TC001: Login validation</a></li>
+                        <li><a href="#" onclick="showTemplate('tc002')" style="color: #4CAF50; text-decoration: none;">✅ TC002: Registration flow</a></li>
+                        <li><a href="#" onclick="showTemplate('tc003')" style="color: #4CAF50; text-decoration: none;">✅ TC003: Logout functionality</a></li>
+                    </ul>
+                </div>
+
+                <div class="dashboard-card card-progress">
+                    <div class="card-header">
+                        <span class="card-icon">🔄</span>
+                        <span class="card-title">Core Features</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-partial" style="width: 50%;"></div>
+                    </div>
+                    <p><strong>2/2 test cases completed</strong></p>
+                    <ul style="margin-top: 15px; padding-left: 20px; line-height: 1.6;">
+                        <li><a href="#" onclick="showTemplate('tc004')" style="color: #FF9800; text-decoration: none;">⚠️ TC004: Board creation (Partial Pass)</a></li>
+                        <li><a href="#" onclick="showTemplate('tc005')" style="color: #4CAF50; text-decoration: none;">✅ TC005: Card management</a></li>
+                    </ul>
+                </div>
+
+                <div class="dashboard-card card-pending">
+                    <div class="card-header">
+                        <span class="card-icon">🐛</span>
+                        <span class="card-title">Quality Status</span>
+                    </div>
+                    <p style="margin-bottom: 15px;"><strong>1 bug identified and documented</strong></p>
+                    <div style="background: #1a1a1a; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <span style="background: #FF9800; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">MEDIUM</span>
+                            <span style="color: #ccc;">BUG_001</span>
+                        </div>
+                        <p style="font-size: 0.9rem; line-height: 1.4;"><a href="#" onclick="showTemplate('bug001')" style="color: #f44336; text-decoration: none;">White Background Selection Creates Blue Gradient</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional Info -->
+            <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a; text-align: center; margin-bottom: 40px;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">👩‍💻 Professional Details</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div><strong>Created by:</strong> Patrycja Gontarek</div>
+                    <div><strong>Environment:</strong> Chrome 137.x, macOS Sequoia</div>
+                    <div><strong>Duration:</strong> 7 days (27/05 - 03/06/2025)</div>
+                    <div><strong>Version:</strong> 1.2</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TC001 - LOGIN TEST -->
+    <div id="tc001" class="template-section">
+        <div class="container">
+            <button class="back-nav" onclick="showTemplate('main')">← Back to Main</button>
+            
+            <div class="test-case-detail">
+                <div class="test-case-header">
+                    <h1 class="test-case-id-title">TC001</h1>
+                    <p class="test-case-subtitle">Verify successful login with valid credentials</p>
+                    
+                    <div class="test-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Priority</div>
+                            <div class="meta-value">High</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Test Type</div>
+                            <div class="meta-value">Positive Test</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Feature</div>
+                            <div class="meta-value">User Authentication</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Status</div>
+                            <div class="meta-value"><span class="status-badge status-pass">Pass</span></div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Created By</div>
+                            <div class="meta-value">Patrycja Gontarek</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Executed Date</div>
+                            <div class="meta-value">27/05/2025</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-header">🎯 Test Objective</h2>
+                <p>To verify that registered users can successfully log into Trello using valid email and password combinations, and are redirected to their dashboard upon successful authentication.</p>
+
+                <h2 class="section-header">📋 Preconditions</h2>
+                <ul style="padding-left: 20px; line-height: 1.8;">
+                    <li>User has a valid registered Trello account</li>
+                    <li>User is currently logged out</li>
+                    <li>User has stable internet connection</li>
+                    <li>Testing on supported browser (Chrome)</li>
+                </ul>
+
+                <h2 class="section-header">📊 Test Data</h2>
+                <div class="meta-item">
+                    <p><strong>Valid Email:</strong> testuser@example.com<br>
+                    <strong>Valid Password:</strong> ValidPassword123*<br>
+                    <strong>Browser:</strong> Chrome (Version 137.0.7151.56)<br>
+                    <strong>Test Environment:</strong> Production (trello.com)</p>
+                    <p style="margin-top: 10px; color: #888; font-style: italic;">Note: These are example formats. Create your own test account for actual execution.</p>
+                </div>
+
+                <h2 class="section-header">🔬 Test Steps</h2>
+                <table class="test-steps-table">
+                    <thead>
+                        <tr>
+                            <th>Step No.</th>
+                            <th>Test Steps</th>
+                            <th>Expected Result</th>
+                            <th>Actual Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Navigate to https://trello.com</td>
+                            <td>Trello homepage loads successfully with "Log in" button visible in top right corner</td>
+                            <td>Trello homepage loaded successfully with visible "Log in" button</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Click on "Log in" button</td>
+                            <td>User is redirected to login page with email and password fields displayed</td>
+                            <td>The login page showed successfully</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Enter valid email address in the email field</td>
+                            <td>Email is accepted, field shows no error validation</td>
+                            <td>Email is visible in the field</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Enter valid password in the password field</td>
+                            <td>Password is masked with dots/asterisks, "Show" icon is visible</td>
+                            <td>All elements displayed as expected</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Click on "Log in" button</td>
+                            <td>Loading indicator appears. User is authenticated. Redirected to dashboard</td>
+                            <td>The board with the logged-in user is visible</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Verify dashboard elements</td>
+                            <td>User's boards are displayed. Profile icon shows in top right, "Create" option is available</td>
+                            <td>Dashboard loaded successfully displaying 4 user boards in grid layout. Profile icon with user avatar visible. Blue 'Create' button prominently displayed. No console errors detected</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 class="section-header">✅ Post-conditions</h2>
+                <ul style="padding-left: 20px; line-height: 1.8;">
+                    <li>User is successfully logged into Trello</li>
+                    <li>User session is active</li>
+                    <li>User can access all features available to their account type</li>
+                </ul>
+
+                <h2 class="section-header">📈 Test Results</h2>
+                <div class="meta-item">
+                    <p><strong>Executed Date:</strong> 28/05/2025<br>
+                    <strong>Executed By:</strong> Patrycja Gontarek<br>
+                    <strong>Overall Status:</strong> <span class="status-badge status-pass">Pass</span><br>
+                    <strong>Defects Found:</strong> None</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TC002 - REGISTRATION TEST -->
+    <div id="tc002" class="template-section">
+        <div class="container">
+            <button class="back-nav" onclick="showTemplate('main')">← Back to Main</button>
+            
+            <div class="test-case-detail">
+                <div class="test-case-header">
+                    <h1 class="test-case-id-title">TC002</h1>
+                    <p class="test-case-subtitle">Verify registration with already registered email</p>
+                    
+                    <div class="test-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Priority</div>
+                            <div class="meta-value">High</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Test Type</div>
+                            <div class="meta-value">Negative Test</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Feature</div>
+                            <div class="meta-value">User Registration</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Status</div>
+                            <div class="meta-value"><span class="status-badge status-pass">Pass</span></div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Created By</div>
+                            <div class="meta-value">Patrycja Gontarek</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Executed Date</div>
+                            <div class="meta-value">27/05/2025</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-header">🎯 Test Objective</h2>
+                <p>To verify that the system prevents users from creating duplicate accounts with an email address that is already registered in Trello, and displays appropriate error messaging.</p>
+
+                <h2 class="section-header">📋 Preconditions</h2>
+                <ul style="padding-left: 20px; line-height: 1.8;">
+                    <li>Tester has access to an email that is already registered in Trello</li>
+                    <li>User is on a cleared browser (no cached data)</li>
+                    <li>User is not logged into any Trello account</li>
+                    <li>Stable internet connection</li>
+                </ul>
+
+                <h2 class="section-header">🔬 Test Steps</h2>
+                <table class="test-steps-table">
+                    <thead>
+                        <tr>
+                            <th>Step No.</th>
+                            <th>Test Steps</th>
+                            <th>Expected Result</th>
+                            <th>Actual Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Navigate to https://trello.com</td>
+                            <td>Trello homepage loads with "Create an account" button visible</td>
+                            <td>Trello homepage loaded with blue link "Create an account"</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Click on "Create an account" button</td>
+                            <td>Registration page loads with email field and "Sign up" button</td>
+                            <td>Registration page loaded with email field and blue "Sign up" button</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Enter an already registered email address</td>
+                            <td>Email is accepted in the field, no immediate validation</td>
+                            <td>Email address appeared in the field</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Click "Sign up" button</td>
+                            <td>System checks email availability. Error message appears. User remains on registration page</td>
+                            <td>System checked email availability and immediately redirected to "Log in to continue" page</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Verify error message content on login page</td>
+                            <td>Error shows "An account with this email already exists" or similar user-friendly message</td>
+                            <td>Error showed: "It looks like you've already got an account associated with this email. Log in instead or reset your password if you've forgotten it"</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Verify page behaviour after error</td>
+                            <td>Email field retains the entered value. User can proceed to login</td>
+                            <td>Email address pre-filled in the form field. Blue "Log in" button is provided. User can modify email and try to log in to existing account</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="findings-section">
+                    <h2 class="section-header">🔍 Findings & Observations</h2>
+                    <div class="finding-item">
+                        <div class="finding-title">UX Enhancement/Positive Observation</div>
+                        <div class="finding-content">
+                            During test execution, I discovered that Trello implements an intelligent redirect flow instead of traditional inline error messaging:
+                            <br><br>
+                            <strong>Expected:</strong> Error message on registration page<br>
+                            <strong>Actual:</strong> Automatic redirect to login page with pre-filled email<br>
+                            <strong>Impact:</strong> Saves users 5-10 seconds and reduces friction
+                            <br><br>
+                            This demonstrates superior UX design thinking by assuming user intent (existing user forgot they have account) rather than treating as error.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TC003 - LOGOUT TEST -->
+    <div id="tc003" class="template-section">
+        <div class="container">
+            <button class="back-nav" onclick="showTemplate('main')">← Back to Main</button>
+            
+            <div class="test-case-detail">
+                <div class="test-case-header">
+                    <h1 class="test-case-id-title">TC003</h1>
+                    <p class="test-case-subtitle">Verify logout functionality</p>
+                    
+                    <div class="test-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Priority</div>
+                            <div class="meta-value">High</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Test Type</div>
+                            <div class="meta-value">Positive Test</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Feature</div>
+                            <div class="meta-value">User Logout</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Status</div>
+                            <div class="meta-value"><span class="status-badge status-pass">Pass</span></div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Created By</div>
+                            <div class="meta-value">Patrycja Gontarek</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Executed Date</div>
+                            <div class="meta-value">29/05/2025</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-header">🎯 Test Objective</h2>
+                <p>To verify that users can successfully logout from Trello, ensuring proper session termination, security handling, and consistent behavior across multiple tabs.</p>
+
+                <h2 class="section-header">📋 Preconditions</h2>
+                <ul style="padding-left: 20px; line-height: 1.8;">
+                    <li>User is successfully logged into Trello</li>
+                    <li>User has at least one board open</li>
+                    <li>Two browser tabs are open with Trello</li>
+                    <li>Browser DevTools is open to monitor cookies/network</li>
+                </ul>
+
+                <h2 class="section-header">🔬 Test Steps</h2>
+                <table class="test-steps-table">
+                    <thead>
+                        <tr>
+                            <th>Step No.</th>
+                            <th>Test Steps</th>
+                            <th>Expected Result</th>
+                            <th>Actual Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Open Trello in 2 tabs, ensure both show logged-in state</td>
+                            <td>Both tabs display user profile, boards, and authenticated content</td>
+                            <td>Found user profile avatar in top-right corner, boards displayed in the middle, authenticated content visible</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>In DevTools > Application > Cookies, note auth cookies</td>
+                            <td>Should see authentication cookies including 'cloud.session.token'</td>
+                            <td>Found multiple auth cookies: cloud.session.token (991 bytes), atlassian.account.xsrf.token, atlUserHash, and 15+ other cookies</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Copy board URL and click profile avatar (top-right corner)</td>
+                            <td>Dropdown menu appears with account options including "Log out"</td>
+                            <td>Various options were found in the dropdown, including "Log out"</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Click "Log out" option</td>
+                            <td>Logout process initiates (may show loading or confirmation)</td>
+                            <td>Redirected to "Log out of your Atlassian account" with visible blue "Log out" button</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Click blue "Log out" button</td>
+                            <td>Redirected to Trello homepage with "Log in" option visible</td>
+                            <td>Successfully redirected to homepage with "Log in" option in upper right corner</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Check second browser tab</td>
+                            <td>Tab should show logged-out state on refresh/action</td>
+                            <td>Tab displayed "Page not found. This page may be private. You must log in to view it."</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>In first tab, click browser back button</td>
+                            <td>Should NOT return to authenticated pages</td>
+                            <td>Website loaded on "Log out of your Atlassian account", no access to previous authenticated content</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Try accessing copied board URL</td>
+                            <td>Should show login prompt or error, not show board content</td>
+                            <td>Displayed "Page not found" with message "This page may be private. You must log in to view it"</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Open DevTools > Application > Cookies</td>
+                            <td>Session cookies should be cleared/expired</td>
+                            <td>Main session token cleared. Some Atlassian ecosystem cookies persist (by design)</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Go to Network tab, refresh page and check API calls</td>
+                            <td>Should block access to user data</td>
+                            <td>GET request returns 200 OK but with error page content (no user data exposed). Page shows login prompt</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="findings-section">
+                    <h2 class="section-header">🔍 Findings & Observations</h2>
+                    <div class="finding-item">
+                        <div class="finding-title">1. Persistent Atlassian Ecosystem Cookies (Expected Behavior)</div>
+                        <div class="finding-content">
+                            Some cookies remain after logout: __aid_user_id, atlUserHash, hasAccount=atlassian<br>
+                            <strong>Assessment:</strong> This is by design for Atlassian's cross-product features<br>
+                            <strong>Security Impact:</strong> None - these cookies cannot grant access to Trello resources
+                        </div>
+                    </div>
+                    <div class="finding-item">
+                        <div class="finding-title">2. API Endpoints Return 200 OK with Error Page (Expected Behavior)</div>
+                        <div class="finding-content">
+                            Board endpoints return 200 OK but serve error pages<br>
+                            <strong>Assessment:</strong> Common practice - status code indicates page loaded successfully<br>
+                            <strong>Security Impact:</strong> None - actual content shows login prompt, no data exposed
+                        </div>
+                    </div>
+                    <div class="finding-item">
+                        <div class="finding-title">3. Proper Session Termination Confirmed</div>
+                        <div class="finding-content">
+                            Critical session token (cloud.session.token) is properly cleared<br>
+                            All attempts to access user resources result in login prompts<br>
+                            No user data accessible post-logout
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TC004 - BOARD CREATION TEST -->
+    <div id="tc004" class="template-section">
+        <div class="container">
+            <button class="back-nav" onclick="showTemplate('main')">← Back to Main</button>
+            
+            <div class="test-case-detail">
+                <div class="test-case-header">
+                    <h1 class="test-case-id-title">TC004</h1>
+                    <p class="test-case-subtitle">Create and Configure a New Board</p>
+                    
+                    <div class="test-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Priority</div>
+                            <div class="meta-value">High</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Test Type</div>
+                            <div class="meta-value">Positive Test</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Feature</div>
+                            <div class="meta-value">Board Management</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Status</div>
+                            <div class="meta-value"><span class="status-badge status-partial">Partial Pass</span></div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Created By</div>
+                            <div class="meta-value">Patrycja Gontarek</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Executed Date</div>
+                            <div class="meta-value">30/05/2025</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-header">🎯 Test Objective</h2>
+                <p>To verify that authenticated users can successfully create a new Trello board with custom configurations, including board name, visibility settings, and background selection, ensuring proper board initialization and access control.</p>
+
+                <h2 class="section-header">📋 Preconditions</h2>
+                <ul style="padding-left: 20px; line-height: 1.8;">
+                    <li>User is successfully logged into Trello</li>
+                    <li>User has permissions to create boards (free tier allows up to 10 boards)</li>
+                    <li>User is on the main dashboard</li>
+                    <li>Browser DevTools is available for monitoring network requests</li>
+                </ul>
+
+                <h2 class="section-header">🔬 Test Steps (Key Steps Shown)</h2>
+                <table class="test-steps-table">
+                    <thead>
+                        <tr>
+                            <th>Step No.</th>
+                            <th>Test Steps</th>
+                            <th>Expected Result</th>
+                            <th>Actual Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>From dashboard, click blue "Create" button</td>
+                            <td>Dropdown menu appears with "Create board" option</td>
+                            <td>Dropdown displayed with "Create board" and "Start with a template" options</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Select white background (first option)</td>
+                            <td>White background should be selectable and highlighted</td>
+                            <td>White background was available and highlighted with black checkmark</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Click "Create" button</td>
+                            <td>Loading indicator appears, button shows disabled state</td>
+                            <td>Button showed brief loading state, then modal closed. Network showed POST request</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Verify board creation success</td>
+                            <td>Redirected to new board URL with white background and "Add another list" option</td>
+                            <td>Successfully redirected to new board but showing gradient-bubble blue background instead of selected white, with 3 default lists: "To Do", "Doing", "Done"</td>
+                            <td><span class="status-badge status-partial">Partial Pass - Bug Found</span></td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>Check API response for background setting</td>
+                            <td>Response should include background: "white"</td>
+                            <td>API returned background: "gradient-bubble" instead of "white"</td>
+                            <td><span class="status-badge status-partial">Partial Pass</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="findings-section">
+                    <h2 class="section-header">🔍 Findings & Observations</h2>
+                    <div class="finding-item">
+                        <div class="finding-title">1. Default Board Configuration</div>
+                        <div class="finding-content">
+                            <strong>Observation:</strong> Three default lists are created: "To Do", "Doing", "Done"<br>
+                            <strong>Assessment:</strong> Follows standard Kanban methodology<br>
+                            <strong>User Impact:</strong> Immediate usability without additional setup
+                        </div>
+                    </div>
+                    <div class="finding-item">
+                        <div class="finding-title">2. Background Color Inconsistency (<a href="#" onclick="showTemplate('bug001')" style="color: #f44336;">BUG_001</a>)</div>
+                        <div class="finding-content">
+                            <strong>Observation:</strong> Selected white background appears as gradient-bubble<br>
+                            <strong>Assessment:</strong> Potential UI/backend synchronization issue<br>
+                            <strong>Impact:</strong> Minor visual discrepancy, functionality not affected
+                        </div>
+                    </div>
+                    <div class="finding-item">
+                        <div class="finding-title">3. Performance Metrics (Within Acceptable Range)</div>
+                        <div class="finding-content">
+                            <strong>Board Creation:</strong> ~1.2 seconds from click to redirect<br>
+                            <strong>API Response:</strong> 847ms for POST /1/boards endpoint<br>
+                            <strong>Page Load:</strong> 2.1 seconds to fully interactive state
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TC005 - CARD MANAGEMENT TEST -->
+    <div id="tc005" class="template-section">
+        <div class="container">
+            <button class="back-nav" onclick="showTemplate('main')">← Back to Main</button>
+            
+            <div class="test-case-detail">
+                <div class="test-case-header">
+                    <h1 class="test-case-id-title">TC005</h1>
+                    <p class="test-case-subtitle">Card lifecycle management and data persistence</p>
+                    
+                    <div class="test-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Priority</div>
+                            <div class="meta-value">High</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Test Type</div>
+                            <div class="meta-value">Hybrid (Scripted + Exploratory)</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Feature</div>
+                            <div class="meta-value">Card Management</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Status</div>
+                            <div class="meta-value"><span class="status-badge status-pass">Pass</span></div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Created By</div>
+                            <div class="meta-value">Patrycja Gontarek</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Executed Date</div>
+                            <div class="meta-value">06/06/2025</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-header">🎯 Test Objective</h2>
+                <p>To verify that users can successfully create, modify, and manage cards throughout their complete lifecycle, ensuring data integrity, proper state transitions, and business rule compliance across different user interactions and system conditions.</p>
+
+                <h2 class="section-header">🔬 Test Steps - Part A: Core Functionality (Key Steps)</h2>
+                <table class="test-steps-table">
+                    <thead>
+                        <tr>
+                            <th>Step No.</th>
+                            <th>Test Steps</th>
+                            <th>Expected Result</th>
+                            <th>Actual Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>In "To Do" list, click "Add a card" button</td>
+                            <td>Card creation interface appears with text input field active</td>
+                            <td>Card creation interface appeared with "Enter a title or paste a link" input field</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Type "Review QA documentation" and click "Add a card"</td>
+                            <td>Card created instantly, appears in "To Do" list with entered title</td>
+                            <td>Card "Review QA documentation" created in "To Do" list with interactive elements on hover</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Add checklist "Documentation Tasks" with 3 items</td>
+                            <td>Checklist created with 3 unchecked items, progress shows 0/3</td>
+                            <td>Checklist "Documentation Tasks" created with 3 items, showing 0% progress</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Drag card from "To Do" to "Doing" list</td>
+                            <td>Card moves smoothly with visual feedback</td>
+                            <td>Card successfully moved to "Doing" list. Network captured multiple requests</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Refresh entire page (F5). Verify all data persists</td>
+                            <td>After refresh: Card in "Doing" list, description saved, checklist shows 1/3</td>
+                            <td>Card persists in "Doing" list with all data intact - title, description, checklist (1/3), due date</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 class="section-header">🔬 Test Steps - Part B: Exploratory Testing (Key Steps)</h2>
+                <table class="test-steps-table">
+                    <thead>
+                        <tr>
+                            <th>Test Type</th>
+                            <th>Test Steps</th>
+                            <th>Expected Result</th>
+                            <th>Actual Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Character Limit</td>
+                            <td>Create card with 500+ character Lorem ipsum text</td>
+                            <td>Either truncation warning or proper handling of long text</td>
+                            <td>Long text displays with scroll capability. Minor sticky header overlap in modal view but text remains readable</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>XSS Test</td>
+                            <td>Create card with `&lt;script&gt;alert('XSS')&lt;/script&gt;`</td>
+                            <td>Script tags escaped, no alert shown</td>
+                            <td>No alert displayed, script tags rendered as text. Properly escaped in network payload</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>Unicode Test</td>
+                            <td>Create card with emojis and special characters</td>
+                            <td>All characters display correctly without encoding issues</td>
+                            <td>All emojis and special characters displayed correctly. No console errors</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>Rapid Fire</td>
+                            <td>Create 5 cards as fast as possible</td>
+                            <td>All cards created or rate limiting kicks in</td>
+                            <td>All 5 cards created successfully in correct order. No rate limiting observed</td>
+                            <td><span class="status-badge status-pass">Pass</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="findings-section">
+                    <h2 class="section-header">🔍 Findings & Observations</h2>
+                    <div class="finding-item">
+                        <div class="finding-title">1. Robust Data Persistence Mechanism</div>
+                        <div class="finding-content">
+                            <strong>Observation:</strong> All card data persisted correctly across page refresh and browser tabs<br>
+                            <strong>Assessment:</strong> Real-time synchronization working as expected with proper API calls<br>
+                            <strong>Impact:</strong> Ensures data integrity and consistent user experience across sessions
+                        </div>
+                    </div>
+                    <div class="finding-item">
+                        <div class="finding-title">2. Strong Security Implementation</div>
+                        <div class="finding-content">
+                            <strong>Observation:</strong> XSS attempt properly escaped and rendered as plain text<br>
+                            <strong>Assessment:</strong> Input sanitization working correctly, preventing script injection attacks<br>
+                            <strong>Security Impact:</strong> Protects users from malicious code execution
+                        </div>
+                    </div>
+                    <div class="finding-item">
+                        <div class="finding-title">3. Comprehensive Unicode Support</div>
+                        <div class="finding-content">
+                            <strong>Observation:</strong> Emojis, special characters, and multilingual text rendered correctly<br>
+                            <strong>Assessment:</strong> Proper UTF-8 encoding throughout the application<br>
+                            <strong>Impact:</strong> Supports global user base with diverse language requirements
+                        </div>
+                    </div>
+                    <div class="finding-item">
+                        <div class="finding-title">4. Excellent Performance Under Load</div>
+                        <div class="finding-content">
+                            <strong>Observation:</strong> Rapid creation of 5 cards completed successfully without failures<br>
+                            <strong>Assessment:</strong> Backend handles concurrent requests efficiently<br>
+                            <strong>Performance Impact:</strong> Supports power users and bulk operations
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUG_001 REPORT -->
+    <div id="bug001" class="template-section">
+        <div class="container">
+            <button class="back-nav" onclick="showTemplate('main')">← Back to Main</button>
+            
+            <div class="bug-report">
+                <div class="bug-header">
+                    <div>
+                        <h1 class="bug-title">🐛 BUG_001</h1>
+                        <p style="font-size: 1.3rem; margin-top: 10px;">White Background Selection Creates Blue Gradient</p>
+                    </div>
+                    <div class="bug-badges">
+                        <span class="bug-badge severity-medium">MEDIUM SEVERITY</span>
+                        <span class="bug-badge priority-high">HIGH PRIORITY</span>
+                    </div>
+                </div>
+
+                <div class="bug-details">
+                    <div class="bug-detail-card">
+                        <div class="bug-detail-title">📍 Found In</div>
+                        <p>TC004 - Create and Configure a New Board<br>
+                        During board creation background selection process</p>
+                    </div>
+                    <div class="bug-detail-card">
+                        <div class="bug-detail-title">📅 Discovery Date</div>
+                        <p>30/05/2025<br>
+                        During Step 8 of TC004 execution</p>
+                    </div>
+                    <div class="bug-detail-card">
+                        <div class="bug-detail-title">🔧 Environment</div>
+                        <p>Chrome 137.0.7151.56<br>
+                        macOS Sequoia 15.5<br>
+                        Production (trello.com)</p>
+                    </div>
+                    <div class="bug-detail-card">
+                        <div class="bug-detail-title">👩‍💻 Reported By</div>
+                        <p>Patrycja Gontarek<br>
+                        QA Tester</p>
+                    </div>
+                </div>
+
+                <h2 class="section-header">🎯 Bug Description</h2>
+                <p style="background: #1a1a1a; padding: 20px; border-radius: 10px; border-left: 4px solid #f44336;">
+                    When a user selects the white background option during board creation, the system creates the board with a blue gradient background instead of the selected white background. This creates a discrepancy between user selection and the actual board appearance.
+                </p>
+
+                <h2 class="section-header">🔄 Steps to Reproduce</h2>
+                <ol style="padding-left: 25px; line-height: 1.8;">
+                    <li>Log into Trello and navigate to dashboard</li>
+                    <li>Click the blue "Create" button in top navigation</li>
+                    <li>Select "Create board" from dropdown</li>
+                    <li>Enter any board name</li>
+                    <li>Select the white background (first option in background selector)</li>
+                    <li>Confirm the white background is highlighted with checkmark</li>
+                    <li>Click "Create" button</li>
+                    <li>Observe the created board background</li>
+                </ol>
+
+                <h2 class="section-header">🎯 Expected Behavior</h2>
+                <p style="background: #1a4a1a; padding: 15px; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                    <strong>Expected:</strong> Board should be created with white/plain background as selected by user during board creation process.
+                </p>
+
+                <h2 class="section-header">❌ Actual Behavior</h2>
+                <p style="background: #4a1a1a; padding: 15px; border-radius: 8px; border-left: 4px solid #f44336;">
+                    <strong>Actual:</strong> Board is created with "gradient-bubble" blue background instead of the selected white background.
+                </p>
+
+                <h2 class="section-header">🔍 Technical Evidence</h2>
+                <div class="bug-details">
+                    <div class="bug-detail-card">
+                        <div class="bug-detail-title">🖥️ UI Evidence</div>
+                        <p>• White background option was successfully selected in UI<br>
+                        • Checkmark overlay confirmed selection<br>
+                        • No error messages during creation process</p>
+                    </div>
+                    <div class="bug-detail-card">
+                        <div class="bug-detail-title">🔌 API Evidence</div>
+                        <p>• POST /1/boards request sent successfully<br>
+                        • API response shows: <code>background: "gradient-bubble"</code><br>
+                        • Expected: <code>background: "white"</code> or similar</p>
+                    </div>
+                    <div class="bug-detail-card">
+                        <div class="bug-detail-title">🌐 Browser Evidence</div>
+                        <p>• DevTools Network tab captured API mismatch<br>
+                        • No JavaScript console errors<br>
+                        • Background preference not preserved in request</p>
+                    </div>
+                </div>
+
+                <h2 class="section-header">📊 Impact Analysis</h2>
+                <div class="bug-details">
+                    <div class="bug-detail-card">
+                        <div class="bug-detail-title">👥 User Impact</div>
+                        <p><strong>Scope:</strong> All users creating boards with white background<br>
+                        <strong>Frequency:</strong> Every time white background is selected<br>
+                        <strong>Severity:</strong> Minor visual discrepancy, functionality not affected</p>
+                    </div>
+                    <div class="bug-detail-card">
+                        <div class="bug-detail-title">💼 Business Impact</div>
+                        <p><strong>Priority:</strong> High (user experience/trust issue)<br>
+                        <strong>Revenue Impact:</strong> Low<br>
+                        <strong>Brand Impact:</strong> Minor consistency issue</p>
+                    </div>
+                </div>
+
+                <h2 class="section-header">🔧 Root Cause Hypothesis</h2>
+                <div style="background: #1a1a1a; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <p><strong>Likely Causes:</strong></p>
+                    <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>UI/Backend Sync Issue:</strong> Frontend selection not properly transmitted to backend</li>
+                        <li><strong>Default Override:</strong> Backend defaulting to gradient-bubble when white selection fails</li>
+                        <li><strong>Mapping Error:</strong> White background option mapped to wrong backend value</li>
+                        <li><strong>Validation Issue:</strong> White background not recognized as valid option by backend</li>
+                    </ul>
+                </div>
+
+                <h2 class="section-header">💡 Recommended Solution</h2>
+                <div style="background: #1a1a1a; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <p><strong>Investigation Steps:</strong></p>
+                    <ol style="margin-top: 10px; padding-left: 25px; line-height: 1.6;">
+                        <li>Verify frontend background selection value transmission</li>
+                        <li>Check backend validation logic for background options</li>
+                        <li>Review mapping between UI selections and backend values</li>
+                        <li>Test other background options for similar issues</li>
+                        <li>Implement proper error handling for invalid background selections</li>
+                    </ol>
+                </div>
+
+                <h2 class="section-header">🎯 Acceptance Criteria for Fix</h2>
+                <ul style="background: #1a1a1a; padding: 20px; border-radius: 10px; margin: 20px 0; line-height: 1.8;">
+                    <li>✅ User selects white background → Board created with white background</li>
+                    <li>✅ API response matches user selection</li>
+                    <li>✅ No regression in other background options</li>
+                    <li>✅ Proper error handling if selection fails</li>
+                    <li>✅ Consistent behavior across all browsers</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEST PLAN PAGE -->
+    <div id="testplan" class="template-section">
+        <div class="container">
+            <button class="back-nav" onclick="showTemplate('main')">← Back to Main</button>
+            
+            <div style="background: #2a2a2a; border-radius: 15px; padding: 40px; margin-bottom: 40px; border: 1px solid #3a3a3a; text-align: center;">
+                <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 20px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">📋 TEST PLAN</h1>
+                <h2 style="font-size: 2rem; margin-bottom: 30px; color: #ccc;">Trello Web Application</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; max-width: 600px; margin: 0 auto;">
+                    <div style="background: #1a1a1a; padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #667eea;">5</div>
+                        <div style="opacity: 0.8;">Test Cases</div>
+                    </div>
+                    <div style="background: #1a1a1a; padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #667eea;">80%</div>
+                        <div style="opacity: 0.8;">Pass Rate</div>
+                    </div>
+                    <div style="background: #1a1a1a; padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #667eea;">1</div>
+                        <div style="opacity: 0.8;">Bug Found</div>
+                    </div>
+                    <div style="background: #1a1a1a; padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #667eea;">7</div>
+                        <div style="opacity: 0.8;">Days</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Plan Sections -->
+            <div style="display: grid; gap: 25px;">
+                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
+                        <span>🎯</span> 1. Introduction
+                    </h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
+                            <strong>Purpose:</strong> This test plan outlines the testing approach for Trello's web application core features
+                        </div>
+                        <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
+                            <strong>Scope:</strong> Free tier functionality of Trello web app (desktop browsers)
+                        </div>
+                        <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
+                            <strong>Objective:</strong> Identify bugs, verify functionality, and ensure quality user experience
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
+                        <span>🧪</span> 2. Test Items
+                    </h2>
+                    <ul style="padding-left: 20px; line-height: 1.8;">
+                        <li><strong>User Authentication</strong> (Login/Logout)</li>
+                        <li><strong>User Registration</strong> (Duplicate email validation)</li>
+                        <li><strong>Board Management</strong> (Create and Configure)</li>
+                        <li><strong>Card Functionality</strong> (Lifecycle and data persistence)</li>
+                    </ul>
+                </div>
+
+                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
+                        <span>🔬</span> 4. Testing Approach
+                    </h2>
+                    <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea; margin-bottom: 15px;">
+                        <strong>Testing Type:</strong> Manual Functional Testing<br>
+                        <strong>Testing Levels:</strong> System Testing
+                    </div>
+                    <strong>Testing Methods:</strong>
+                    <ul style="padding-left: 20px; line-height: 1.8; margin-top: 10px;">
+                        <li>Positive testing (valid inputs)</li>
+                        <li>Negative testing (invalid inputs)</li>
+                        <li>Boundary value testing</li>
+                        <li>Exploratory testing</li>
+                        <li>Security testing (XSS attempts)</li>
+                        <li>Performance monitoring (DevTools)</li>
+                        <li>Hybrid testing (Scripted + Exploratory)</li>
+                    </ul>
+                </div>
+
+                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
+                        <span>📦</span> 8. Test Deliverables
+                    </h2>
+                    <strong>Test Cases (5):</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                        <li><a href="#" onclick="showTemplate('tc001')" style="color: #4CAF50; text-decoration: none;">✅ TC001: Verify successful login with valid credentials (Pass)</a></li>
+                        <li><a href="#" onclick="showTemplate('tc002')" style="color: #4CAF50; text-decoration: none;">✅ TC002: Verify registration with already registered email (Pass)</a></li>
+                        <li><a href="#" onclick="showTemplate('tc003')" style="color: #4CAF50; text-decoration: none;">✅ TC003: Verify logout functionality (Pass)</a></li>
+                        <li><a href="#" onclick="showTemplate('tc004')" style="color: #FF9800; text-decoration: none;">⚠️ TC004: Create and Configure a New Board (Partial Pass - 1 bug)</a></li>
+                        <li><a href="#" onclick="showTemplate('tc005')" style="color: #4CAF50; text-decoration: none;">✅ TC005: Card lifecycle management and data persistence (Pass)</a></li>
+                    </ul>
+                    
+                    <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; margin-top: 20px; border-left: 4px solid #f44336;">
+                        <strong>Bug Reports:</strong><br>
+                        <a href="#" onclick="showTemplate('bug001')" style="color: #f44336; text-decoration: none;">🐛 BUG_001: White Background Selection Creates Blue Gradient</a>
+                    </div>
+                </div>
+
+                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
+                        <span>📊</span> 11. Test Summary
+                    </h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
+                            <strong>Total Test Cases Planned:</strong> 5<br>
+                            <strong>Test Cases Executed:</strong> 5<br>
+                            <strong>Pass:</strong> 4<br>
+                            <strong>Partial Pass:</strong> 1
+                        </div>
+                        <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
+                            <strong>Fail:</strong> 0<br>
+                            <strong>Bugs Found:</strong> 1 (Medium severity, High priority)<br>
+                            <strong>Overall Pass Rate:</strong> 80%
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
+                        <span>✅</span> 12. Approval
+                    </h2>
+                    <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
+                        <strong>Created by:</strong> Patrycja Gontarek<br>
+                        <strong>Date:</strong> 26/05/2025<br>
+                        <strong>Last Updated:</strong> 03/06/2025<br>
+                        <strong>Version:</strong> 1.2<br>
+                        <strong>Duration:</strong> 7 days (27/05 - 03/06/2025)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Main navigation function
+        function showTemplate(templateId) {
+            // Hide all templates
+            const templates = document.querySelectorAll('.template-section');
+            templates.forEach(template => {
+                template.classList.remove('active');
+            });
+            
+            // Show selected template
+            document.getElementById(templateId).classList.add('active');
+            
+            // Update nav buttons
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Find and activate the correct nav button
+            const targetButton = Array.from(navButtons).find(btn => 
+                btn.onclick && btn.onclick.toString().includes(templateId)
+            );
+            if (targetButton) {
+                targetButton.classList.add('active');
+            }
+            
+            // Scroll to top smoothly
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            
+            // Update page title for better UX
+            updatePageTitle(templateId);
+            
+            // Track navigation for analytics (if needed)
+            trackNavigation(templateId);
+        }
+        
+        // Update page title based on current section
+        function updatePageTitle(templateId) {
+            const titles = {
+                'main': 'Trello Testing Project - Main Dashboard',
+                'testplan': 'Trello Testing Project - Test Plan',
+                'tc001': 'TC001 - Login Validation',
+                'tc002': 'TC002 - Registration Flow',
+                'tc003': 'TC003 - Logout Functionality',
+                'tc004': 'TC004 - Board Creation',
+                'tc005': 'TC005 - Card Management',
+                'bug001': 'BUG_001 - Background Selection Issue'
+            };
+            
+            document.title = titles[templateId] || 'Trello Testing Portfolio';
+        }
+        
+        // Track navigation for user analytics
+        function trackNavigation(templateId) {
+            // Could be used for portfolio analytics
+            console.log(`Navigated to: ${templateId} at ${new Date().toLocaleTimeString()}`);
+        }
+        
+        // Enhanced back navigation
+        function navigateBack(targetTemplate = 'main') {
+            showTemplate(targetTemplate);
+        }
+        
+        // Keyboard navigation support
+        document.addEventListener('keydown', function(event) {
+            // ESC key returns to main
+            if (event.key === 'Escape') {
+                showTemplate('main');
+            }
+            
+            // Number keys for quick navigation to test cases
+            if (event.key >= '1' && event.key <= '5') {
+                const tcMap = {
+                    '1': 'tc001',
+                    '2': 'tc002', 
+                    '3': 'tc003',
+                    '4': 'tc004',
+                    '5': 'tc005'
+                };
+                showTemplate(tcMap[event.key]);
+            }
+            
+            // 'P' key for test plan
+            if (event.key.toLowerCase() === 'p') {
+                showTemplate('testplan');
+            }
+            
+            // 'B' key for bug report
+            if (event.key.toLowerCase() === 'b') {
+                showTemplate('bug001');
+            }
+        });
+        
+        // Initialize tooltips or help text
+        function initializeTooltips() {
+            // Add helpful keyboard shortcuts info
+            const helpText = `
+                Keyboard Shortcuts:
+                • ESC - Return to Main
+                • 1-5 - Jump to Test Cases
+                • P - Test Plan
+                • B - Bug Report
+            `;
+            
+            // Could add a help modal or tooltip system here
+            console.log('Portfolio loaded. Use keyboard shortcuts for quick navigation:', helpText);
+        }
+        
+        // Auto-save scroll position for better UX
+        function saveScrollPosition(templateId) {
+            const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+            sessionStorage.setItem(`scroll_${templateId}`, scrollPosition);
+        }
+        
+        function restoreScrollPosition(templateId) {
+            const savedPosition = sessionStorage.getItem(`scroll_${templateId}`);
+            if (savedPosition) {
+                setTimeout(() => {
+                    window.scrollTo({
+                        top: parseInt(savedPosition),
+                        behavior: 'smooth'
+                    });
+                }, 100);
+            }
+        }
+        
+        // Initialize portfolio on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTooltips();
+            
+            // Add smooth transitions to all interactive elements
+            const interactiveElements = document.querySelectorAll('.nav-btn, .back-nav, .dashboard-card');
+            interactiveElements.forEach(element => {
+                element.style.transition = 'all 0.3s ease';
+            });
+            
+            console.log('Trello Testing Portfolio loaded successfully!');
+        });
+        
+        // Print-friendly function for interviews
+        function preparePrintVersion() {
+            // Show all sections for comprehensive printing
+            const templates = document.querySelectorAll('.template-section');
+            templates.forEach(template => {
+                template.style.display = 'block';
+                template.style.pageBreakAfter = 'always';
+            });
+            
+            // Hide navigation for cleaner print
+            document.querySelector('.template-nav').style.display = 'none';
+            
+            setTimeout(() => {
+                window.print();
+                // Restore after printing
+                location.reload();
+            }, 500);
+        }
+    </script>
+</body>
+</html>
