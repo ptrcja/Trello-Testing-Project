@@ -63,6 +63,21 @@
             display: block;
         }
         
+        /* Ensure TC005 and BugReport sections are completely hidden from other pages */
+        #tc005:not(.active),
+        #bug001:not(.active) {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        
+        /* Hide TC005 and BugReport galleries when not in their respective sections */
+        .template-section:not(#tc005) #tc005-gallery,
+        .template-section:not(#bug001) #bugreport-gallery {
+            display: none !important;
+        }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -517,6 +532,303 @@
                 padding: 10px 8px;
             }
         }
+
+        /* Screenshot Gallery Styles */
+        .screenshot-gallery {
+            margin: 30px 0;
+        }
+
+        .gallery-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .gallery-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gallery-counter {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .gallery-item {
+            background: #1a1a1a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #3a3a3a;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-color: #667eea;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay-icon {
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            padding: 12px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+        }
+
+        .gallery-caption {
+            padding: 15px;
+            background: #1a1a1a;
+        }
+
+        .gallery-caption-title {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+
+        .gallery-caption-desc {
+            color: #ccc;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .lightbox-caption {
+            color: white;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .lightbox-prev {
+            left: 30px;
+        }
+
+        .lightbox-next {
+            right: 30px;
+        }
+
+        .lightbox-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Gallery Categories */
+        .gallery-categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-category {
+            background: #3a3a3a;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .gallery-category:hover,
+        .gallery-category.active {
+            background: #667eea;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Gallery */
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+            }
+
+            .gallery-image {
+                height: 180px;
+            }
+
+            .lightbox-nav {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .lightbox-prev {
+                left: 15px;
+            }
+
+            .lightbox-next {
+                right: 15px;
+            }
+
+            .lightbox-close {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Hide screenshot galleries in main and test plan sections */
+        #main .screenshot-gallery,
+        #testplan .screenshot-gallery {
+            display: none !important;
+        }
+        
+        /* Only show screenshot galleries in test case and bug report sections */
+        #tc001 .screenshot-gallery,
+        #tc002 .screenshot-gallery,
+        #tc003 .screenshot-gallery,
+        #tc004 .screenshot-gallery,
+        #tc005 .screenshot-gallery,
+        #bug001 .screenshot-gallery {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -754,6 +1066,40 @@
                     <strong>Overall Status:</strong> <span class="status-badge status-pass">Pass</span><br>
                     <strong>Defects Found:</strong> None</p>
                 </div>
+
+                <!-- Screenshot Gallery -->
+                <div class="screenshot-gallery">
+                    <div class="gallery-header">
+                        <h2 class="gallery-title">
+                            📸 Screenshots
+                            <span class="gallery-counter">2</span>
+                        </h2>
+                    </div>
+                    
+                    <div class="gallery-grid" id="tc001-gallery">
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC001/Screenshot1.png', 'Login Page - Initial State', 0, ['screenshots/TC001/Screenshot1.png', 'screenshots/TC001/Screenshot2.png'], ['Login Page - Initial State', 'Login Page - After Successful Login'])">
+                            <img src="screenshots/TC001/Screenshot1.png" alt="Login Page - Initial State" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Login Page - Initial State</div>
+                                <div class="gallery-caption-desc">Trello login page showing email and password fields</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC001/Screenshot2.png', 'Login Page - After Successful Login', 1, ['screenshots/TC001/Screenshot1.png', 'screenshots/TC001/Screenshot2.png'], ['Login Page - Initial State', 'Login Page - After Successful Login'])">
+                            <img src="screenshots/TC001/Screenshot2.png" alt="Login Page - After Successful Login" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Login Page - After Successful Login</div>
+                                <div class="gallery-caption-desc">User dashboard after successful authentication</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -876,6 +1222,40 @@
                             <strong>Impact:</strong> Saves users 5-10 seconds and reduces friction
                             <br><br>
                             This demonstrates superior UX design thinking by assuming user intent (existing user forgot they have account) rather than treating as error.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Screenshot Gallery -->
+                <div class="screenshot-gallery">
+                    <div class="gallery-header">
+                        <h2 class="gallery-title">
+                            📸 Screenshots
+                            <span class="gallery-counter">2</span>
+                        </h2>
+                    </div>
+                    
+                    <div class="gallery-grid" id="tc002-gallery">
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC002/Screenshot3.png', 'Registration Flow - Duplicate Email Error', 0, ['screenshots/TC002/Screenshot3.png', 'screenshots/TC002/Screenshot5.png'], ['Registration Flow - Duplicate Email Error', 'Registration Flow - Login Page'])">
+                            <img src="screenshots/TC002/Screenshot3.png" alt="Registration Flow - Duplicate Email Error" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Registration Flow - Duplicate Email Error</div>
+                                <div class="gallery-caption-desc">System redirects to login page with pre-filled email when duplicate email is detected</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC002/Screenshot5.png', 'Registration Flow - Login Page', 1, ['screenshots/TC002/Screenshot3.png', 'screenshots/TC002/Screenshot5.png'], ['Registration Flow - Duplicate Email Error', 'Registration Flow - Login Page'])">
+                            <img src="screenshots/TC002/Screenshot5.png" alt="Registration Flow - Login Page" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Registration Flow - Login Page</div>
+                                <div class="gallery-caption-desc">Login page showing pre-filled email and password field</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1044,6 +1424,101 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Screenshot Gallery -->
+                <div class="screenshot-gallery">
+                    <div class="gallery-header">
+                        <h2 class="gallery-title">
+                            📸 Screenshots
+                            <span class="gallery-counter">7</span>
+                        </h2>
+                        <div class="gallery-categories" data-gallery="tc003-gallery">
+                            <div class="gallery-category active" onclick="filterGallery('all', 'tc003-gallery')">All</div>
+                            <div class="gallery-category" onclick="filterGallery('ui', 'tc003-gallery')">UI</div>
+                            <div class="gallery-category" onclick="filterGallery('network', 'tc003-gallery')">Network</div>
+                            <div class="gallery-category" onclick="filterGallery('cookies', 'tc003-gallery')">Cookies</div>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-grid" id="tc003-gallery">
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC003/Screenshot__T003_Tab1.png', 'Tab 1 - Logged In State', 0, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
+                            <img src="screenshots/TC003/Screenshot__T003_Tab1.png" alt="Tab 1 - Logged In State" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Tab 1 - Logged In State</div>
+                                <div class="gallery-caption-desc">First browser tab showing authenticated user state</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_Tab2.png', 'Tab 2 - Logged In State', 1, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
+                            <img src="screenshots/TC003/Screenshot_TC003_Tab2.png" alt="Tab 2 - Logged In State" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Tab 2 - Logged In State</div>
+                                <div class="gallery-caption-desc">Second browser tab showing authenticated user state</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'Profile Dropdown Menu', 2, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
+                            <img src="screenshots/TC003/Screenshot_TC003_ProfileDropdown.png" alt="Profile Dropdown Menu" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Profile Dropdown Menu</div>
+                                <div class="gallery-caption-desc">User profile dropdown with logout option visible</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'Atlassian Logout Page', 3, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
+                            <img src="screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png" alt="Atlassian Logout Page" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Atlassian Logout Page</div>
+                                <div class="gallery-caption-desc">Confirmation page for logging out of Atlassian account</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="network" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'Network Calls - 200 OK Response', 4, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
+                            <img src="screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png" alt="Network Calls - 200 OK Response" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Network Calls - 200 OK Response</div>
+                                <div class="gallery-caption-desc">DevTools Network tab showing API responses after logout</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="cookies" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'Cookies Before Logout', 5, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
+                            <img src="screenshots/TC003/Screenshot_TC003_CookiesBefore.png" alt="Cookies Before Logout" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Cookies Before Logout</div>
+                                <div class="gallery-caption-desc">DevTools Application tab showing cookies before logout</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="cookies" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_CookiesAfter.png', 'Cookies After Logout', 6, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
+                            <img src="screenshots/TC003/Screenshot_TC003_CookiesAfter.png" alt="Cookies After Logout" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Cookies After Logout</div>
+                                <div class="gallery-caption-desc">DevTools Application tab showing cookies after logout</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1171,6 +1646,90 @@
                             <strong>Board Creation:</strong> ~1.2 seconds from click to redirect<br>
                             <strong>API Response:</strong> 847ms for POST /1/boards endpoint<br>
                             <strong>Page Load:</strong> 2.1 seconds to fully interactive state
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Screenshot Gallery -->
+                <div class="screenshot-gallery">
+                    <div class="gallery-header">
+                        <h2 class="gallery-title">
+                            📸 Screenshots
+                            <span class="gallery-counter">6</span>
+                        </h2>
+                        <div class="gallery-categories" data-gallery="tc004-gallery">
+                            <div class="gallery-category active" onclick="filterGallery('all', 'tc004-gallery')">All</div>
+                            <div class="gallery-category" onclick="filterGallery('ui', 'tc004-gallery')">UI</div>
+                            <div class="gallery-category" onclick="filterGallery('api', 'tc004-gallery')">API</div>
+                            <div class="gallery-category" onclick="filterGallery('bug', 'tc004-gallery')">Bug</div>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-grid" id="tc004-gallery">
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'Create Dropdown Menu', 0, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
+                            <img src="screenshots/TC004/Screenshot_TC004_CreateDropdown.png" alt="Create Dropdown Menu" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Create Dropdown Menu</div>
+                                <div class="gallery-caption-desc">Dashboard create button dropdown with board creation option</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'Board Creation Modal', 1, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
+                            <img src="screenshots/TC004/Screenshot_TC004_BoardCreationModal.png" alt="Board Creation Modal" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Board Creation Modal</div>
+                                <div class="gallery-caption-desc">Modal for creating new board with white background selected</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'New Board Created', 2, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
+                            <img src="screenshots/TC004/Screenshot_TC004_NewBoardCreated.png" alt="New Board Created" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">New Board Created</div>
+                                <div class="gallery-caption-desc">Successfully created board with default lists</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'Board in Dashboard', 3, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
+                            <img src="screenshots/TC004/Screenshot_TC004_BoardInDashboard.png" alt="Board in Dashboard" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Board in Dashboard</div>
+                                <div class="gallery-caption-desc">New board appears in user dashboard</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="api" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'API Response - Board Name', 4, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
+                            <img src="screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png" alt="API Response - Board Name" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">API Response - Board Name</div>
+                                <div class="gallery-caption-desc">DevTools Network tab showing board creation API response</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item" data-category="bug" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_Bug.png', 'Bug - Background Color Issue', 5, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
+                            <img src="screenshots/TC004/Screenshot_TC004_Bug.png" alt="Bug - Background Color Issue" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-icon">🔍</div>
+                            </div>
+                            <div class="gallery-caption">
+                                <div class="gallery-caption-title">Bug - Background Color Issue</div>
+                                <div class="gallery-caption-desc">Board shows gradient background instead of selected white</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1345,6 +1904,377 @@
                             <strong>Assessment:</strong> Backend handles concurrent requests efficiently<br>
                             <strong>Performance Impact:</strong> Supports power users and bulk operations
                         </div>
+                    </div>
+                </div>
+
+                <!-- Screenshot Gallery -->
+                <div class="screenshot-gallery">
+                    <div class="gallery-header">
+                        <h2 class="gallery-title">
+                            📸 Screenshots
+                            <span class="gallery-counter">16</span>
+                        </h2>
+                        <div class="gallery-categories" data-gallery="tc005-gallery">
+                            <div class="gallery-category active" onclick="filterGallery('all', 'tc005-gallery')">All</div>
+                            <div class="gallery-category" onclick="filterGallery('ui', 'tc005-gallery')">UI</div>
+                            <div class="gallery-category" onclick="filterGallery('network', 'tc005-gallery')">Network</div>
+                            <div class="gallery-category" onclick="filterGallery('bug', 'tc005-gallery')">Bug</div>
+                        </div>
+                    </div>
+                    <div class="gallery-grid" id="tc005-gallery">
+                        <div class="gallery-item" data-category="network" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png', 'Network - Clear State', 0, [
+                            'screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png',
+                            'screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png',
+                            'screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png',
+                            'screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png',
+                            'screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_Network_Tab2.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_UI_BothTabs.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_Network_Response_LongText.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_UI_Modal_Truncated_Text.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_Unicode_Display.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_XSS_Network_Encoding.png',
+                            'screenshots/TC005/Screenshot_TC005_Test4_Rapid_Fire_Results.png'
+                        ], [
+                            'Network - Clear State',
+                            'Network - POST Card',
+                            'UI - Card Created',
+                            'UI - Description Saved',
+                            'UI - Checklist Complete',
+                            'Network - PUT Due Date',
+                            'UI - Date Picker',
+                            'Network - PUT Move',
+                            'Network - PUT CheckItem',
+                            'Network - Tab 2',
+                            'UI - Both Tabs',
+                            'Network - Long Text',
+                            'UI - Modal Truncated Text',
+                            'UI - Unicode Display',
+                            'Network - XSS Encoding',
+                            'UI - Rapid Fire Results'
+                        ])">
+                            <img src="screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png" alt="Network - Clear State" class="gallery-image">
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-caption"><div class="gallery-caption-title">Network - Clear State</div><div class="gallery-caption-desc">Network tab before any card actions</div></div>
+                        </div>
+                        <div class="gallery-item" data-category="network" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png', 'Network - POST Card', 1, [
+                            'screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png',
+                            'screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png',
+                            'screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png',
+                            'screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png',
+                            'screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_Network_Tab2.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_UI_BothTabs.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_Network_Response_LongText.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_UI_Modal_Truncated_Text.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_Unicode_Display.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_XSS_Network_Encoding.png',
+                            'screenshots/TC005/Screenshot_TC005_Test4_Rapid_Fire_Results.png'
+                        ], [
+                            'Network - Clear State',
+                            'Network - POST Card',
+                            'UI - Card Created',
+                            'UI - Description Saved',
+                            'UI - Checklist Complete',
+                            'Network - PUT Due Date',
+                            'UI - Date Picker',
+                            'Network - PUT Move',
+                            'Network - PUT CheckItem',
+                            'Network - Tab 2',
+                            'UI - Both Tabs',
+                            'Network - Long Text',
+                            'UI - Modal Truncated Text',
+                            'UI - Unicode Display',
+                            'Network - XSS Encoding',
+                            'UI - Rapid Fire Results'
+                        ])">
+                            <img src="screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png" alt="Network - POST Card" class="gallery-image">
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-caption"><div class="gallery-caption-title">Network - POST Card</div><div class="gallery-caption-desc">POST request for card creation</div></div>
+                        </div>
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png', 'UI - Card Created', 2, [
+                            'screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png',
+                            'screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png',
+                            'screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png',
+                            'screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png',
+                            'screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_Network_Tab2.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_UI_BothTabs.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_Network_Response_LongText.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_UI_Modal_Truncated_Text.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_Unicode_Display.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_XSS_Network_Encoding.png',
+                            'screenshots/TC005/Screenshot_TC005_Test4_Rapid_Fire_Results.png'
+                        ], [
+                            'Network - Clear State',
+                            'Network - POST Card',
+                            'UI - Card Created',
+                            'UI - Description Saved',
+                            'UI - Checklist Complete',
+                            'Network - PUT Due Date',
+                            'UI - Date Picker',
+                            'Network - PUT Move',
+                            'Network - PUT CheckItem',
+                            'Network - Tab 2',
+                            'UI - Both Tabs',
+                            'Network - Long Text',
+                            'UI - Modal Truncated Text',
+                            'UI - Unicode Display',
+                            'Network - XSS Encoding',
+                            'UI - Rapid Fire Results'
+                        ])">
+                            <img src="screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png" alt="UI - Card Created" class="gallery-image">
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-caption"><div class="gallery-caption-title">UI - Card Created</div><div class="gallery-caption-desc">Card created in To Do list</div></div>
+                        </div>
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png', 'UI - Description Saved', 3, [
+                            'screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png',
+                            'screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png',
+                            'screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png',
+                            'screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png',
+                            'screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_Network_Tab2.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_UI_BothTabs.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_Network_Response_LongText.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_UI_Modal_Truncated_Text.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_Unicode_Display.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_XSS_Network_Encoding.png',
+                            'screenshots/TC005/Screenshot_TC005_Test4_Rapid_Fire_Results.png'
+                        ], [
+                            'Network - Clear State',
+                            'Network - POST Card',
+                            'UI - Card Created',
+                            'UI - Description Saved',
+                            'UI - Checklist Complete',
+                            'Network - PUT Due Date',
+                            'UI - Date Picker',
+                            'Network - PUT Move',
+                            'Network - PUT CheckItem',
+                            'Network - Tab 2',
+                            'UI - Both Tabs',
+                            'Network - Long Text',
+                            'UI - Modal Truncated Text',
+                            'UI - Unicode Display',
+                            'Network - XSS Encoding',
+                            'UI - Rapid Fire Results'
+                        ])">
+                            <img src="screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png" alt="UI - Description Saved" class="gallery-image">
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-caption"><div class="gallery-caption-title">UI - Description Saved</div><div class="gallery-caption-desc">Card description saved successfully</div></div>
+                        </div>
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png', 'UI - Checklist Complete', 4, [
+                            'screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png',
+                            'screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png',
+                            'screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png',
+                            'screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png',
+                            'screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_Network_Tab2.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_UI_BothTabs.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_Network_Response_LongText.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_UI_Modal_Truncated_Text.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_Unicode_Display.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_XSS_Network_Encoding.png',
+                            'screenshots/TC005/Screenshot_TC005_Test4_Rapid_Fire_Results.png'
+                        ], [
+                            'Network - Clear State',
+                            'Network - POST Card',
+                            'UI - Card Created',
+                            'UI - Description Saved',
+                            'UI - Checklist Complete',
+                            'Network - PUT Due Date',
+                            'UI - Date Picker',
+                            'Network - PUT Move',
+                            'Network - PUT CheckItem',
+                            'Network - Tab 2',
+                            'UI - Both Tabs',
+                            'Network - Long Text',
+                            'UI - Modal Truncated Text',
+                            'UI - Unicode Display',
+                            'Network - XSS Encoding',
+                            'UI - Rapid Fire Results'
+                        ])">
+                            <img src="screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png" alt="UI - Checklist Complete" class="gallery-image">
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-caption"><div class="gallery-caption-title">UI - Checklist Complete</div><div class="gallery-caption-desc">Checklist items marked as complete</div></div>
+                        </div>
+                        <div class="gallery-item" data-category="network" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png', 'Network - PUT Due Date', 5, [
+                            'screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png',
+                            'screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png',
+                            'screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png',
+                            'screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png',
+                            'screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_Network_Tab2.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_UI_BothTabs.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_Network_Response_LongText.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_UI_Modal_Truncated_Text.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_Unicode_Display.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_XSS_Network_Encoding.png',
+                            'screenshots/TC005/Screenshot_TC005_Test4_Rapid_Fire_Results.png'
+                        ], [
+                            'Network - Clear State',
+                            'Network - POST Card',
+                            'UI - Card Created',
+                            'UI - Description Saved',
+                            'UI - Checklist Complete',
+                            'Network - PUT Due Date',
+                            'UI - Date Picker',
+                            'Network - PUT Move',
+                            'Network - PUT CheckItem',
+                            'Network - Tab 2',
+                            'UI - Both Tabs',
+                            'Network - Long Text',
+                            'UI - Modal Truncated Text',
+                            'UI - Unicode Display',
+                            'Network - XSS Encoding',
+                            'UI - Rapid Fire Results'
+                        ])">
+                            <img src="screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png" alt="Network - PUT Due Date" class="gallery-image">
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-caption"><div class="gallery-caption-title">Network - PUT Due Date</div><div class="gallery-caption-desc">PUT request for updating due date</div></div>
+                        </div>
+                        <!-- Continue with remaining items... -->
+                        <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png', 'UI - Date Picker', 6, [
+                            'screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png',
+                            'screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png',
+                            'screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png',
+                            'screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png',
+                            'screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_Network_Tab2.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_UI_BothTabs.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_Network_Response_LongText.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_UI_Modal_Truncated_Text.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_Unicode_Display.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_XSS_Network_Encoding.png',
+                            'screenshots/TC005/Screenshot_TC005_Test4_Rapid_Fire_Results.png'
+                        ], [
+                            'Network - Clear State',
+                            'Network - POST Card',
+                            'UI - Card Created',
+                            'UI - Description Saved',
+                            'UI - Checklist Complete',
+                            'Network - PUT Due Date',
+                            'UI - Date Picker',
+                            'Network - PUT Move',
+                            'Network - PUT CheckItem',
+                            'Network - Tab 2',
+                            'UI - Both Tabs',
+                            'Network - Long Text',
+                            'UI - Modal Truncated Text',
+                            'UI - Unicode Display',
+                            'Network - XSS Encoding',
+                            'UI - Rapid Fire Results'
+                        ])">
+                            <img src="screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png" alt="UI - Date Picker" class="gallery-image">
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-caption"><div class="gallery-caption-title">UI - Date Picker</div><div class="gallery-caption-desc">Date picker for setting due date</div></div>
+                        </div>
+                        <div class="gallery-item" data-category="network" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png', 'Network - PUT Move', 7, [
+                            'screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png',
+                            'screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png',
+                            'screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png',
+                            'screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png',
+                            'screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_Network_Tab2.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_UI_BothTabs.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_Network_Response_LongText.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_UI_Modal_Truncated_Text.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_Unicode_Display.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_XSS_Network_Encoding.png',
+                            'screenshots/TC005/Screenshot_TC005_Test4_Rapid_Fire_Results.png'
+                        ], [
+                            'Network - Clear State',
+                            'Network - POST Card',
+                            'UI - Card Created',
+                            'UI - Description Saved',
+                            'UI - Checklist Complete',
+                            'Network - PUT Due Date',
+                            'UI - Date Picker',
+                            'Network - PUT Move',
+                            'Network - PUT CheckItem',
+                            'Network - Tab 2',
+                            'UI - Both Tabs',
+                            'Network - Long Text',
+                            'UI - Modal Truncated Text',
+                            'UI - Unicode Display',
+                            'Network - XSS Encoding',
+                            'UI - Rapid Fire Results'
+                        ])">
+                            <img src="screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png" alt="Network - PUT Move" class="gallery-image">
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-caption"><div class="gallery-caption-title">Network - PUT Move</div><div class="gallery-caption-desc">PUT request for moving card</div></div>
+                        </div>
+                        <div class="gallery-item" data-category="network" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png', 'Network - PUT CheckItem', 8, [
+                            'screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png',
+                            'screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png',
+                            'screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png',
+                            'screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png',
+                            'screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png',
+                            'screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png',
+                            'screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_Network_Tab2.png',
+                            'screenshots/TC005/Screenshot_TC005_Step10_UI_BothTabs.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_Network_Response_LongText.png',
+                            'screenshots/TC005/Screenshot_TC005_Test1_UI_Modal_Truncated_Text.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_Unicode_Display.png',
+                            'screenshots/TC005/Screenshot_TC005_Test2_XSS_Network_Encoding.png',
+                            'screenshots/TC005/Screenshot_TC005_Test4_Rapid_Fire_Results.png'
+                        ], [
+                            'Network - Clear State',
+                            'Network - POST Card',
+                            'UI - Card Created',
+                            'UI - Description Saved',
+                            'UI - Checklist Complete',
+                            'Network - PUT Due Date',
+                            'UI - Date Picker',
+                            'Network - PUT Move',
+                            'Network - PUT CheckItem',
+                            'Network - Tab 2',
+                            'UI - Both Tabs',
+                            'Network - Long Text',
+                            'UI - Modal Truncated Text',
+                            'UI - Unicode Display',
+                            'Network - XSS Encoding',
+                            'UI - Rapid Fire Results'
+                        ])">
+                            <img src="screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png" alt="Network - PUT CheckItem" class="gallery-image">
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-caption"><div class="gallery-caption-title">Network - PUT CheckItem</div><div class="gallery-caption-desc">PUT request for updating checklist item</div></div>
+                        </div>
+                        <!-- Add remaining items... -->
                     </div>
                 </div>
             </div>
@@ -1629,6 +2559,12 @@
     <script>
         // Main navigation function
         function showTemplate(templateId) {
+            // Close lightbox if open when navigating to main or test plan sections
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox && lightbox.classList.contains('active') && (templateId === 'main' || templateId === 'testplan')) {
+                closeLightbox();
+            }
+            
             // Hide all templates
             const templates = document.querySelectorAll('.template-section');
             templates.forEach(template => {
@@ -1785,6 +2721,151 @@
                 // Restore after printing
                 location.reload();
             }, 500);
+        }
+    </script>
+
+    <!-- Lightbox for Screenshot Gallery -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+            <button class="lightbox-nav lightbox-prev" onclick="previousImage()">‹</button>
+            <button class="lightbox-nav lightbox-next" onclick="nextImage()">›</button>
+            <img id="lightbox-image" class="lightbox-image" src="" alt="">
+            <div id="lightbox-caption" class="lightbox-caption"></div>
+            <div id="lightbox-counter" class="lightbox-counter"></div>
+        </div>
+    </div>
+
+    <!-- Gallery JavaScript -->
+    <script>
+        // Global variables for lightbox
+        let currentImageIndex = 0;
+        let currentGalleryImages = [];
+        let currentGalleryCaptions = [];
+
+        // Open lightbox with image
+        function openLightbox(imageSrc, caption, imageIndex, galleryImages, galleryCaptions) {
+            // Validate that the user is in the correct section for TC005 and BugReport images
+            const currentSection = document.querySelector('.template-section.active');
+            if (!currentSection) return;
+            
+            const currentSectionId = currentSection.id;
+            
+            // Check if trying to open TC005 images from wrong section
+            if (imageSrc.includes('TC005/') && currentSectionId !== 'tc005') {
+                console.warn('TC005 images can only be viewed from TC005 section');
+                return;
+            }
+            
+            // Check if trying to open BugReport images from wrong section
+            if (imageSrc.includes('BugReport/') && currentSectionId !== 'bug001') {
+                console.warn('BugReport images can only be viewed from BugReport section');
+                return;
+            }
+            
+            currentImageIndex = imageIndex;
+            currentGalleryImages = galleryImages;
+            currentGalleryCaptions = galleryCaptions;
+            
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            const lightboxCounter = document.getElementById('lightbox-counter');
+            
+            lightboxImage.src = imageSrc;
+            lightboxCaption.textContent = caption;
+            lightboxCounter.textContent = `${imageIndex + 1} / ${galleryImages.length}`;
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close lightbox
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            
+            // Clear TC005 and BugReport images when closing lightbox
+            if (lightboxImage.src.includes('TC005/') || lightboxImage.src.includes('BugReport/')) {
+                lightboxImage.src = '';
+                currentGalleryImages = [];
+                currentGalleryCaptions = [];
+            }
+            
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Navigate to previous image
+        function previousImage() {
+            if (currentGalleryImages.length === 0) return;
+            
+            currentImageIndex = (currentImageIndex - 1 + currentGalleryImages.length) % currentGalleryImages.length;
+            
+            const lightboxImage = document.getElementById('lightbox-image');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            const lightboxCounter = document.getElementById('lightbox-counter');
+            
+            lightboxImage.src = currentGalleryImages[currentImageIndex];
+            lightboxCaption.textContent = currentGalleryCaptions[currentImageIndex];
+            lightboxCounter.textContent = `${currentImageIndex + 1} / ${currentGalleryImages.length}`;
+        }
+
+        // Navigate to next image
+        function nextImage() {
+            if (currentGalleryImages.length === 0) return;
+            
+            currentImageIndex = (currentImageIndex + 1) % currentGalleryImages.length;
+            
+            const lightboxImage = document.getElementById('lightbox-image');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            const lightboxCounter = document.getElementById('lightbox-counter');
+            
+            lightboxImage.src = currentGalleryImages[currentImageIndex];
+            lightboxCaption.textContent = currentGalleryCaptions[currentImageIndex];
+            lightboxCounter.textContent = `${currentImageIndex + 1} / ${currentGalleryImages.length}`;
+        }
+
+        // Close lightbox with ESC key
+        document.addEventListener('keydown', function(event) {
+            const lightbox = document.getElementById('lightbox');
+            if (!lightbox.classList.contains('active')) return;
+            
+            if (event.key === 'Escape') {
+                closeLightbox();
+            } else if (event.key === 'ArrowLeft') {
+                previousImage();
+            } else if (event.key === 'ArrowRight') {
+                nextImage();
+            }
+        });
+
+        // Close lightbox when clicking outside the image
+        document.getElementById('lightbox').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeLightbox();
+            }
+        });
+
+        // Gallery filter functionality
+        function filterGallery(category, galleryId) {
+            const gallery = document.getElementById(galleryId);
+            const items = gallery.querySelectorAll('.gallery-item');
+            const categories = document.querySelectorAll(`[data-gallery="${galleryId}"] .gallery-category`);
+            
+            // Update active category
+            categories.forEach(cat => cat.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filter items
+            items.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+                if (category === 'all' || itemCategory === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         }
     </script>
 </body>
