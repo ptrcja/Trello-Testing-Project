@@ -4,832 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trello Testing Portfolio - Patrycja Gontarek</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background-color: #191919;
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
-        }
-        
-        .template-nav {
-            background: #2a2a2a;
-            padding: 15px 0;
-            border-bottom: 2px solid #3a3a3a;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            padding: 0 20px;
-            flex-wrap: wrap;
-        }
-        
-        .nav-btn {
-            background: #3a3a3a;
-            color: #ffffff;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        
-        .nav-btn:hover, .nav-btn.active {
-            background: #667eea;
-            transform: translateY(-2px);
-        }
-        
-        .template-section {
-            display: none;
-            min-height: 100vh;
-        }
-        
-        .template-section.active {
-            display: block;
-        }
-        
-        /* Ensure TC005 and BugReport sections are completely hidden from other pages */
-        #tc005:not(.active),
-        #bug001:not(.active) {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-        }
-        
-        /* Hide TC005 and BugReport galleries when not in their respective sections */
-        .template-section:not(#tc005) #tc005-gallery,
-        .template-section:not(#bug001) #bugreport-gallery {
-            display: none !important;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        /* Main Page Styles */
-        .hero-section {
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px;
-            padding: 50px 30px;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: pulse 6s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
-            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .hero-subtitle {
-            font-size: 1.3rem;
-            opacity: 0.95;
-            margin-bottom: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .hero-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 30px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .stat-item {
-            text-align: center;
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            display: block;
-            color: #ffffff;
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
-        
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-        
-        .dashboard-card {
-            background: #2a2a2a;
-            border-radius: 15px;
-            padding: 30px;
-            border: 1px solid #3a3a3a;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .dashboard-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            border-color: var(--accent-color, #667eea);
-        }
-        
-        .dashboard-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: var(--accent-color, #667eea);
-            border-radius: 15px 15px 0 0;
-        }
-        
-        .card-completed { --accent-color: #4CAF50; }
-        .card-progress { --accent-color: #FF9800; }
-        .card-pending { --accent-color: #f44336; }
-        
-        .card-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .card-icon {
-            font-size: 2rem;
-            margin-right: 15px;
-        }
-        
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-        
-        .progress-bar {
-            background: #3a3a3a;
-            border-radius: 10px;
-            height: 10px;
-            margin: 15px 0;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            border-radius: 10px;
-            transition: width 1s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: shimmer 2s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
-        .progress-completed { background: linear-gradient(90deg, #4CAF50, #66BB6A); }
-        .progress-partial { background: linear-gradient(90deg, #FF9800, #FFB74D); }
-        
-        /* Test Case Detail Styles */
-        .test-case-detail {
-            background: #2a2a2a;
-            border-radius: 15px;
-            padding: 40px;
-            margin-bottom: 30px;
-            border: 1px solid #3a3a3a;
-        }
-        
-        .test-case-header {
-            border-bottom: 2px solid #3a3a3a;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .test-case-id-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-        
-        .test-case-subtitle {
-            font-size: 1.2rem;
-            color: #ccc;
-            margin-bottom: 20px;
-        }
-        
-        .test-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .meta-item {
-            background: #1a1a1a;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #3a3a3a;
-        }
-        
-        .meta-label {
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 5px;
-        }
-        
-        .meta-value {
-            font-weight: 600;
-            color: #fff;
-        }
-        
-        .section-header {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #667eea;
-            margin: 30px 0 15px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .test-steps-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background: #1a1a1a;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .test-steps-table th,
-        .test-steps-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #3a3a3a;
-        }
-        
-        .test-steps-table th {
-            background: #667eea;
-            color: white;
-            font-weight: 600;
-        }
-        
-        .test-steps-table tr:hover {
-            background: #2a2a2a;
-        }
-        
-        .status-badge {
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        
-        .status-pass { 
-            background: #4CAF50; 
-            color: white;
-        }
-        
-        .status-partial { 
-            background: #FF9800; 
-            color: white;
-        }
-        
-        .findings-section {
-            background: #1a1a1a;
-            border-radius: 10px;
-            padding: 25px;
-            margin-top: 30px;
-            border-left: 5px solid #667eea;
-        }
-        
-        .finding-item {
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #3a3a3a;
-        }
-        
-        .finding-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        
-        .finding-title {
-            font-weight: 600;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-        
-        .finding-content {
-            color: #ddd;
-            line-height: 1.6;
-        }
-        
-        /* Bug Report Styles */
-        .bug-report {
-            background: #2a1a1a;
-            border: 2px solid #f44336;
-            border-radius: 15px;
-            padding: 40px;
-            margin-bottom: 30px;
-        }
-        
-        .bug-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        
-        .bug-title {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: #f44336;
-        }
-        
-        .bug-badges {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .bug-badge {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        
-        .severity-medium {
-            background: #FF9800;
-            color: white;
-        }
-        
-        .priority-high {
-            background: #f44336;
-            color: white;
-        }
-        
-        .bug-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .bug-detail-card {
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #3a3a3a;
-        }
-        
-        .bug-detail-title {
-            font-weight: 600;
-            color: #f44336;
-            margin-bottom: 10px;
-        }
-        
-        /* Page Header Styles */
-        .page-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .page-title {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .page-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .back-nav {
-            background: #3a3a3a;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 30px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .back-nav:hover {
-            background: #667eea;
-            transform: translateX(-5px);
-        }
-        
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .hero-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .nav-container {
-                gap: 8px;
-            }
-            
-            .nav-btn {
-                padding: 6px 12px;
-                font-size: 0.8rem;
-            }
-            
-            .test-steps-table {
-                font-size: 0.9rem;
-            }
-            
-            .test-steps-table th,
-            .test-steps-table td {
-                padding: 10px 8px;
-            }
-        }
-
-        /* Screenshot Gallery Styles */
-        .screenshot-gallery {
-            margin: 30px 0;
-        }
-
-        .gallery-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .gallery-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #667eea;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .gallery-counter {
-            background: #667eea;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .gallery-item {
-            background: #1a1a1a;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #3a3a3a;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            border-color: #667eea;
-        }
-
-        .gallery-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover .gallery-image {
-            transform: scale(1.05);
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.7));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .gallery-item:hover .gallery-overlay {
-            opacity: 1;
-        }
-
-        .gallery-overlay-icon {
-            background: rgba(255,255,255,0.9);
-            color: #333;
-            padding: 12px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-        }
-
-        .gallery-caption {
-            padding: 15px;
-            background: #1a1a1a;
-        }
-
-        .gallery-caption-title {
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 5px;
-            font-size: 0.95rem;
-        }
-
-        .gallery-caption-desc {
-            color: #ccc;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        /* Lightbox Styles */
-        .lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            display: none;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .lightbox.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 1;
-        }
-
-        .lightbox-content {
-            position: relative;
-            max-width: 90%;
-            max-height: 90%;
-            text-align: center;
-        }
-
-        .lightbox-image {
-            max-width: 100%;
-            max-height: 90vh;
-            object-fit: contain;
-            border-radius: 8px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-
-        .lightbox-caption {
-            color: white;
-            margin-top: 20px;
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .lightbox-close:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.1);
-        }
-
-        .lightbox-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 15px;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .lightbox-nav:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .lightbox-prev {
-            left: 30px;
-        }
-
-        .lightbox-next {
-            right: 30px;
-        }
-
-        .lightbox-counter {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            background: rgba(0,0,0,0.5);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        /* Gallery Categories */
-        .gallery-categories {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .gallery-category {
-            background: #3a3a3a;
-            color: #fff;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-
-        .gallery-category:hover,
-        .gallery-category.active {
-            background: #667eea;
-            transform: translateY(-2px);
-        }
-
-        /* Responsive Gallery */
-        @media (max-width: 768px) {
-            .gallery-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 15px;
-            }
-
-            .gallery-image {
-                height: 180px;
-            }
-
-            .lightbox-nav {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-            }
-
-            .lightbox-prev {
-                left: 15px;
-            }
-
-            .lightbox-next {
-                right: 15px;
-            }
-
-            .lightbox-close {
-                top: 15px;
-                right: 15px;
-                width: 40px;
-                height: 40px;
-                font-size: 1.5rem;
-            }
-        }
-        
-        /* Hide screenshot galleries in main and test plan sections */
-        #main .screenshot-gallery,
-        #testplan .screenshot-gallery {
-            display: none !important;
-        }
-        
-        /* Only show screenshot galleries in test case and bug report sections */
-        #tc001 .screenshot-gallery,
-        #tc002 .screenshot-gallery,
-        #tc003 .screenshot-gallery,
-        #tc004 .screenshot-gallery,
-        #tc005 .screenshot-gallery,
-        #bug001 .screenshot-gallery {
-            display: block;
-        }
-    </style>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -879,7 +64,7 @@
             <div class="dashboard-grid">
                 <div class="dashboard-card card-completed">
                     <div class="card-header">
-                        <span class="card-icon">✅</span>
+                        <span class="card-icon"></span>
                         <span class="card-title">Authentication Tests</span>
                     </div>
                     <div class="progress-bar">
@@ -887,15 +72,15 @@
                     </div>
                     <p><strong>3/3 test cases completed</strong></p>
                     <ul style="margin-top: 15px; padding-left: 20px; line-height: 1.6;">
-                        <li><a href="#" onclick="showTemplate('tc001')" style="color: #4CAF50; text-decoration: none;">✅ TC001: Login validation</a></li>
-                        <li><a href="#" onclick="showTemplate('tc002')" style="color: #4CAF50; text-decoration: none;">✅ TC002: Registration flow</a></li>
-                        <li><a href="#" onclick="showTemplate('tc003')" style="color: #4CAF50; text-decoration: none;">✅ TC003: Logout functionality</a></li>
+                        <li><a href="#" onclick="showTemplate('tc001')" style="color: #4CAF50; text-decoration: none;">TC001: Login validation</a></li>
+                        <li><a href="#" onclick="showTemplate('tc002')" style="color: #4CAF50; text-decoration: none;">TC002: Registration flow</a></li>
+                        <li><a href="#" onclick="showTemplate('tc003')" style="color: #4CAF50; text-decoration: none;">TC003: Logout functionality</a></li>
                     </ul>
                 </div>
 
                 <div class="dashboard-card card-progress">
                     <div class="card-header">
-                        <span class="card-icon">🔄</span>
+                        <span class="card-icon"></span>
                         <span class="card-title">Core Features</span>
                     </div>
                     <div class="progress-bar">
@@ -903,35 +88,35 @@
                     </div>
                     <p><strong>2/2 test cases completed</strong></p>
                     <ul style="margin-top: 15px; padding-left: 20px; line-height: 1.6;">
-                        <li><a href="#" onclick="showTemplate('tc004')" style="color: #FF9800; text-decoration: none;">⚠️ TC004: Board creation (Partial Pass)</a></li>
-                        <li><a href="#" onclick="showTemplate('tc005')" style="color: #4CAF50; text-decoration: none;">✅ TC005: Card management</a></li>
+                        <li><a href="#" onclick="showTemplate('tc004')" style="color: #FF9800; text-decoration: none;">TC004: Board creation (Partial Pass)</a></li>
+                        <li><a href="#" onclick="showTemplate('tc005')" style="color: #4CAF50; text-decoration: none;">TC005: Card management</a></li>
                     </ul>
                 </div>
 
                 <div class="dashboard-card card-pending">
                     <div class="card-header">
-                        <span class="card-icon">🐛</span>
+                        <span class="card-icon"></span>
                         <span class="card-title">Quality Status</span>
                     </div>
                     <p style="margin-bottom: 15px;"><strong>1 bug identified and documented</strong></p>
-                    <div style="background: #1a1a1a; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <div style="background: var(--error-light); padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid var(--light-border);">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                            <span style="background: #FF9800; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">MEDIUM</span>
-                            <span style="color: #ccc;">BUG_001</span>
+                            <span style="background: var(--warning-orange); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; color: white;">MEDIUM</span>
+                            <span style="color: var(--text-secondary);">BUG_001</span>
                         </div>
-                        <p style="font-size: 0.9rem; line-height: 1.4;"><a href="#" onclick="showTemplate('bug001')" style="color: #f44336; text-decoration: none;">White Background Selection Creates Blue Gradient</a></p>
+                        <p style="font-size: 0.9rem; line-height: 1.4;"><a href="#" onclick="showTemplate('bug001')" style="color: var(--error-red); text-decoration: none;">White Background Selection Creates Blue Gradient</a></p>
                     </div>
                 </div>
             </div>
 
             <!-- Professional Info -->
-            <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a; text-align: center; margin-bottom: 40px;">
-                <h3 style="color: #667eea; margin-bottom: 15px;">👩‍💻 Professional Details</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                    <div><strong>Created by:</strong> Patrycja Gontarek</div>
-                    <div><strong>Environment:</strong> Chrome 137.x, macOS Sequoia</div>
-                    <div><strong>Duration:</strong> 7 days (27/05 - 03/06/2025)</div>
-                    <div><strong>Version:</strong> 1.2</div>
+            <div style="background: var(--lavender-light); border-radius: 12px; padding: 30px; border: 1px solid var(--lavender-border); text-align: center; margin-bottom: 40px;">
+                <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 1.5rem; font-weight: 600;">Professional Details</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; color: var(--text-secondary);">
+                    <div><strong style="color: var(--text-primary);">Created by:</strong> Patrycja Gontarek</div>
+                    <div><strong style="color: var(--text-primary);">Environment:</strong> Chrome 137.x, macOS Sequoia</div>
+                    <div><strong style="color: var(--text-primary);">Duration:</strong> 7 days (27/05 - 03/06/2025)</div>
+                    <div><strong style="color: var(--text-primary);">Version:</strong> 1.2</div>
                 </div>
             </div>
         </div>
@@ -975,10 +160,10 @@
                     </div>
                 </div>
 
-                <h2 class="section-header">🎯 Test Objective</h2>
+                <h2 class="section-header">Test Objective</h2>
                 <p>To verify that registered users can successfully log into Trello using valid email and password combinations, and are redirected to their dashboard upon successful authentication.</p>
 
-                <h2 class="section-header">📋 Preconditions</h2>
+                <h2 class="section-header">Preconditions</h2>
                 <ul style="padding-left: 20px; line-height: 1.8;">
                     <li>User has a valid registered Trello account</li>
                     <li>User is currently logged out</li>
@@ -986,7 +171,7 @@
                     <li>Testing on supported browser (Chrome)</li>
                 </ul>
 
-                <h2 class="section-header">📊 Test Data</h2>
+                <h2 class="section-header">Test Data</h2>
                 <div class="meta-item">
                     <p><strong>Valid Email:</strong> testuser@example.com<br>
                     <strong>Valid Password:</strong> ValidPassword123*<br>
@@ -995,7 +180,7 @@
                     <p style="margin-top: 10px; color: #888; font-style: italic;">Note: These are example formats. Create your own test account for actual execution.</p>
                 </div>
 
-                <h2 class="section-header">🔬 Test Steps</h2>
+                <h2 class="section-header">Test Steps</h2>
                 <table class="test-steps-table">
                     <thead>
                         <tr>
@@ -1052,14 +237,14 @@
                     </tbody>
                 </table>
 
-                <h2 class="section-header">✅ Post-conditions</h2>
+                <h2 class="section-header">Post-conditions</h2>
                 <ul style="padding-left: 20px; line-height: 1.8;">
                     <li>User is successfully logged into Trello</li>
                     <li>User session is active</li>
                     <li>User can access all features available to their account type</li>
                 </ul>
 
-                <h2 class="section-header">📈 Test Results</h2>
+                <h2 class="section-header">Test Results</h2>
                 <div class="meta-item">
                     <p><strong>Executed Date:</strong> 28/05/2025<br>
                     <strong>Executed By:</strong> Patrycja Gontarek<br>
@@ -1071,7 +256,7 @@
                 <div class="screenshot-gallery">
                     <div class="gallery-header">
                         <h2 class="gallery-title">
-                            📸 Screenshots
+                            Screenshots
                             <span class="gallery-counter">2</span>
                         </h2>
                     </div>
@@ -1080,7 +265,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC001/Screenshot1.png', 'Login Page - Initial State', 0, ['screenshots/TC001/Screenshot1.png', 'screenshots/TC001/Screenshot2.png'], ['Login Page - Initial State', 'Login Page - After Successful Login'])">
                             <img src="screenshots/TC001/Screenshot1.png" alt="Login Page - Initial State" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Login Page - Initial State</div>
@@ -1091,7 +276,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC001/Screenshot2.png', 'Login Page - After Successful Login', 1, ['screenshots/TC001/Screenshot1.png', 'screenshots/TC001/Screenshot2.png'], ['Login Page - Initial State', 'Login Page - After Successful Login'])">
                             <img src="screenshots/TC001/Screenshot2.png" alt="Login Page - After Successful Login" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Login Page - After Successful Login</div>
@@ -1142,10 +327,10 @@
                     </div>
                 </div>
 
-                <h2 class="section-header">🎯 Test Objective</h2>
+                <h2 class="section-header">Test Objective</h2>
                 <p>To verify that the system prevents users from creating duplicate accounts with an email address that is already registered in Trello, and displays appropriate error messaging.</p>
 
-                <h2 class="section-header">📋 Preconditions</h2>
+                <h2 class="section-header">Preconditions</h2>
                 <ul style="padding-left: 20px; line-height: 1.8;">
                     <li>Tester has access to an email that is already registered in Trello</li>
                     <li>User is on a cleared browser (no cached data)</li>
@@ -1153,7 +338,7 @@
                     <li>Stable internet connection</li>
                 </ul>
 
-                <h2 class="section-header">🔬 Test Steps</h2>
+                <h2 class="section-header">Test Steps</h2>
                 <table class="test-steps-table">
                     <thead>
                         <tr>
@@ -1211,7 +396,7 @@
                 </table>
 
                 <div class="findings-section">
-                    <h2 class="section-header">🔍 Findings & Observations</h2>
+                    <h2 class="section-header">Findings & Observations</h2>
                     <div class="finding-item">
                         <div class="finding-title">UX Enhancement/Positive Observation</div>
                         <div class="finding-content">
@@ -1230,7 +415,7 @@
                 <div class="screenshot-gallery">
                     <div class="gallery-header">
                         <h2 class="gallery-title">
-                            📸 Screenshots
+                            Screenshots
                             <span class="gallery-counter">2</span>
                         </h2>
                     </div>
@@ -1239,7 +424,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC002/Screenshot3.png', 'Registration Flow - Duplicate Email Error', 0, ['screenshots/TC002/Screenshot3.png', 'screenshots/TC002/Screenshot5.png'], ['Registration Flow - Duplicate Email Error', 'Registration Flow - Login Page'])">
                             <img src="screenshots/TC002/Screenshot3.png" alt="Registration Flow - Duplicate Email Error" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Registration Flow - Duplicate Email Error</div>
@@ -1250,7 +435,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC002/Screenshot5.png', 'Registration Flow - Login Page', 1, ['screenshots/TC002/Screenshot3.png', 'screenshots/TC002/Screenshot5.png'], ['Registration Flow - Duplicate Email Error', 'Registration Flow - Login Page'])">
                             <img src="screenshots/TC002/Screenshot5.png" alt="Registration Flow - Login Page" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Registration Flow - Login Page</div>
@@ -1301,10 +486,10 @@
                     </div>
                 </div>
 
-                <h2 class="section-header">🎯 Test Objective</h2>
+                <h2 class="section-header">Test Objective</h2>
                 <p>To verify that users can successfully logout from Trello, ensuring proper session termination, security handling, and consistent behavior across multiple tabs.</p>
 
-                <h2 class="section-header">📋 Preconditions</h2>
+                <h2 class="section-header">Preconditions</h2>
                 <ul style="padding-left: 20px; line-height: 1.8;">
                     <li>User is successfully logged into Trello</li>
                     <li>User has at least one board open</li>
@@ -1312,7 +497,7 @@
                     <li>Browser DevTools is open to monitor cookies/network</li>
                 </ul>
 
-                <h2 class="section-header">🔬 Test Steps</h2>
+                <h2 class="section-header">Test Steps</h2>
                 <table class="test-steps-table">
                     <thead>
                         <tr>
@@ -1398,7 +583,7 @@
                 </table>
 
                 <div class="findings-section">
-                    <h2 class="section-header">🔍 Findings & Observations</h2>
+                    <h2 class="section-header">Findings & Observations</h2>
                     <div class="finding-item">
                         <div class="finding-title">1. Persistent Atlassian Ecosystem Cookies (Expected Behavior)</div>
                         <div class="finding-content">
@@ -1429,7 +614,7 @@
                 <div class="screenshot-gallery">
                     <div class="gallery-header">
                         <h2 class="gallery-title">
-                            📸 Screenshots
+                            Screenshots
                             <span class="gallery-counter">7</span>
                         </h2>
                         <div class="gallery-categories" data-gallery="tc003-gallery">
@@ -1444,7 +629,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC003/Screenshot__T003_Tab1.png', 'Tab 1 - Logged In State', 0, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
                             <img src="screenshots/TC003/Screenshot__T003_Tab1.png" alt="Tab 1 - Logged In State" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Tab 1 - Logged In State</div>
@@ -1455,7 +640,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_Tab2.png', 'Tab 2 - Logged In State', 1, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
                             <img src="screenshots/TC003/Screenshot_TC003_Tab2.png" alt="Tab 2 - Logged In State" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Tab 2 - Logged In State</div>
@@ -1466,7 +651,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'Profile Dropdown Menu', 2, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
                             <img src="screenshots/TC003/Screenshot_TC003_ProfileDropdown.png" alt="Profile Dropdown Menu" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Profile Dropdown Menu</div>
@@ -1477,7 +662,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'Atlassian Logout Page', 3, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
                             <img src="screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png" alt="Atlassian Logout Page" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Atlassian Logout Page</div>
@@ -1488,7 +673,7 @@
                         <div class="gallery-item" data-category="network" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'Network Calls - 200 OK Response', 4, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
                             <img src="screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png" alt="Network Calls - 200 OK Response" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Network Calls - 200 OK Response</div>
@@ -1499,7 +684,7 @@
                         <div class="gallery-item" data-category="cookies" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'Cookies Before Logout', 5, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
                             <img src="screenshots/TC003/Screenshot_TC003_CookiesBefore.png" alt="Cookies Before Logout" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Cookies Before Logout</div>
@@ -1510,7 +695,7 @@
                         <div class="gallery-item" data-category="cookies" onclick="openLightbox('screenshots/TC003/Screenshot_TC003_CookiesAfter.png', 'Cookies After Logout', 6, ['screenshots/TC003/Screenshot__T003_Tab1.png', 'screenshots/TC003/Screenshot_TC003_Tab2.png', 'screenshots/TC003/Screenshot_TC003_ProfileDropdown.png', 'screenshots/TC003/Screenshot_TC003_AtlassianLogOut.png', 'screenshots/TC003/Screenshot_TC003_NetworkCalls200OK.png', 'screenshots/TC003/Screenshot_TC003_CookiesBefore.png', 'screenshots/TC003/Screenshot_TC003_CookiesAfter.png'], ['Tab 1 - Logged In State', 'Tab 2 - Logged In State', 'Profile Dropdown Menu', 'Atlassian Logout Page', 'Network Calls - 200 OK Response', 'Cookies Before Logout', 'Cookies After Logout'])">
                             <img src="screenshots/TC003/Screenshot_TC003_CookiesAfter.png" alt="Cookies After Logout" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Cookies After Logout</div>
@@ -1561,10 +746,10 @@
                     </div>
                 </div>
 
-                <h2 class="section-header">🎯 Test Objective</h2>
+                <h2 class="section-header">Test Objective</h2>
                 <p>To verify that authenticated users can successfully create a new Trello board with custom configurations, including board name, visibility settings, and background selection, ensuring proper board initialization and access control.</p>
 
-                <h2 class="section-header">📋 Preconditions</h2>
+                <h2 class="section-header">Preconditions</h2>
                 <ul style="padding-left: 20px; line-height: 1.8;">
                     <li>User is successfully logged into Trello</li>
                     <li>User has permissions to create boards (free tier allows up to 10 boards)</li>
@@ -1572,7 +757,7 @@
                     <li>Browser DevTools is available for monitoring network requests</li>
                 </ul>
 
-                <h2 class="section-header">🔬 Test Steps (Key Steps Shown)</h2>
+                <h2 class="section-header">Test Steps (Key Steps Shown)</h2>
                 <table class="test-steps-table">
                     <thead>
                         <tr>
@@ -1623,7 +808,7 @@
                 </table>
 
                 <div class="findings-section">
-                    <h2 class="section-header">🔍 Findings & Observations</h2>
+                    <h2 class="section-header">Findings & Observations</h2>
                     <div class="finding-item">
                         <div class="finding-title">1. Default Board Configuration</div>
                         <div class="finding-content">
@@ -1654,7 +839,7 @@
                 <div class="screenshot-gallery">
                     <div class="gallery-header">
                         <h2 class="gallery-title">
-                            📸 Screenshots
+                            Screenshots
                             <span class="gallery-counter">6</span>
                         </h2>
                         <div class="gallery-categories" data-gallery="tc004-gallery">
@@ -1669,7 +854,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'Create Dropdown Menu', 0, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
                             <img src="screenshots/TC004/Screenshot_TC004_CreateDropdown.png" alt="Create Dropdown Menu" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Create Dropdown Menu</div>
@@ -1680,7 +865,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'Board Creation Modal', 1, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
                             <img src="screenshots/TC004/Screenshot_TC004_BoardCreationModal.png" alt="Board Creation Modal" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Board Creation Modal</div>
@@ -1691,7 +876,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'New Board Created', 2, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
                             <img src="screenshots/TC004/Screenshot_TC004_NewBoardCreated.png" alt="New Board Created" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">New Board Created</div>
@@ -1702,7 +887,7 @@
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'Board in Dashboard', 3, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
                             <img src="screenshots/TC004/Screenshot_TC004_BoardInDashboard.png" alt="Board in Dashboard" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Board in Dashboard</div>
@@ -1713,7 +898,7 @@
                         <div class="gallery-item" data-category="api" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'API Response - Board Name', 4, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
                             <img src="screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png" alt="API Response - Board Name" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">API Response - Board Name</div>
@@ -1724,7 +909,7 @@
                         <div class="gallery-item" data-category="bug" onclick="openLightbox('screenshots/TC004/Screenshot_TC004_Bug.png', 'Bug - Background Color Issue', 5, ['screenshots/TC004/Screenshot_TC004_CreateDropdown.png', 'screenshots/TC004/Screenshot_TC004_BoardCreationModal.png', 'screenshots/TC004/Screenshot_TC004_NewBoardCreated.png', 'screenshots/TC004/Screenshot_TC004_BoardInDashboard.png', 'screenshots/TC004/Screenshot_TC004_APIResponse_Boardname.png', 'screenshots/TC004/Screenshot_TC004_Bug.png'], ['Create Dropdown Menu', 'Board Creation Modal', 'New Board Created', 'Board in Dashboard', 'API Response - Board Name', 'Bug - Background Color Issue'])">
                             <img src="screenshots/TC004/Screenshot_TC004_Bug.png" alt="Bug - Background Color Issue" class="gallery-image">
                             <div class="gallery-overlay">
-                                <div class="gallery-overlay-icon">🔍</div>
+                                <div class="gallery-overlay-icon"></div>
                             </div>
                             <div class="gallery-caption">
                                 <div class="gallery-caption-title">Bug - Background Color Issue</div>
@@ -1775,10 +960,10 @@
                     </div>
                 </div>
 
-                <h2 class="section-header">🎯 Test Objective</h2>
+                <h2 class="section-header">Test Objective</h2>
                 <p>To verify that users can successfully create, modify, and manage cards throughout their complete lifecycle, ensuring data integrity, proper state transitions, and business rule compliance across different user interactions and system conditions.</p>
 
-                <h2 class="section-header">🔬 Test Steps - Part A: Core Functionality (Key Steps)</h2>
+                <h2 class="section-header">Test Steps - Part A: Core Functionality (Key Steps)</h2>
                 <table class="test-steps-table">
                     <thead>
                         <tr>
@@ -1828,7 +1013,7 @@
                     </tbody>
                 </table>
 
-                <h2 class="section-header">🔬 Test Steps - Part B: Exploratory Testing (Key Steps)</h2>
+                <h2 class="section-header">Test Steps - Part B: Exploratory Testing (Key Steps)</h2>
                 <table class="test-steps-table">
                     <thead>
                         <tr>
@@ -1872,7 +1057,7 @@
                 </table>
 
                 <div class="findings-section">
-                    <h2 class="section-header">🔍 Findings & Observations</h2>
+                    <h2 class="section-header">Findings & Observations</h2>
                     <div class="finding-item">
                         <div class="finding-title">1. Robust Data Persistence Mechanism</div>
                         <div class="finding-content">
@@ -1911,7 +1096,7 @@
                 <div class="screenshot-gallery">
                     <div class="gallery-header">
                         <h2 class="gallery-title">
-                            📸 Screenshots
+                            Screenshots
                             <span class="gallery-counter">16</span>
                         </h2>
                         <div class="gallery-categories" data-gallery="tc005-gallery">
@@ -1958,7 +1143,7 @@
                             'UI - Rapid Fire Results'
                         ])">
                             <img src="screenshots/TC005/Screenshot_TC005_Step1_Network_Clear.png" alt="Network - Clear State" class="gallery-image">
-                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon"></div></div>
                             <div class="gallery-caption"><div class="gallery-caption-title">Network - Clear State</div><div class="gallery-caption-desc">Network tab before any card actions</div></div>
                         </div>
                         <div class="gallery-item" data-category="network" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png', 'Network - POST Card', 1, [
@@ -1997,7 +1182,7 @@
                             'UI - Rapid Fire Results'
                         ])">
                             <img src="screenshots/TC005/Screenshot_TC005_Step2_Network_POST.png" alt="Network - POST Card" class="gallery-image">
-                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon"></div></div>
                             <div class="gallery-caption"><div class="gallery-caption-title">Network - POST Card</div><div class="gallery-caption-desc">POST request for card creation</div></div>
                         </div>
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png', 'UI - Card Created', 2, [
@@ -2036,7 +1221,7 @@
                             'UI - Rapid Fire Results'
                         ])">
                             <img src="screenshots/TC005/Screenshot_TC005_Step2_UI_CardCreated.png" alt="UI - Card Created" class="gallery-image">
-                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon"></div></div>
                             <div class="gallery-caption"><div class="gallery-caption-title">UI - Card Created</div><div class="gallery-caption-desc">Card created in To Do list</div></div>
                         </div>
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png', 'UI - Description Saved', 3, [
@@ -2075,7 +1260,7 @@
                             'UI - Rapid Fire Results'
                         ])">
                             <img src="screenshots/TC005/Screenshot_TC005_Step4_UI_Saved_Desc.png" alt="UI - Description Saved" class="gallery-image">
-                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon"></div></div>
                             <div class="gallery-caption"><div class="gallery-caption-title">UI - Description Saved</div><div class="gallery-caption-desc">Card description saved successfully</div></div>
                         </div>
                         <div class="gallery-item" data-category="ui" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png', 'UI - Checklist Complete', 4, [
@@ -2114,7 +1299,7 @@
                             'UI - Rapid Fire Results'
                         ])">
                             <img src="screenshots/TC005/Screenshot_TC005_Step5_UI_ChecklistComplete.png" alt="UI - Checklist Complete" class="gallery-image">
-                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon"></div></div>
                             <div class="gallery-caption"><div class="gallery-caption-title">UI - Checklist Complete</div><div class="gallery-caption-desc">Checklist items marked as complete</div></div>
                         </div>
                         <div class="gallery-item" data-category="network" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png', 'Network - PUT Due Date', 5, [
@@ -2153,7 +1338,7 @@
                             'UI - Rapid Fire Results'
                         ])">
                             <img src="screenshots/TC005/Screenshot_TC005_Step6_Network_PUT_Date.png" alt="Network - PUT Due Date" class="gallery-image">
-                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon"></div></div>
                             <div class="gallery-caption"><div class="gallery-caption-title">Network - PUT Due Date</div><div class="gallery-caption-desc">PUT request for updating due date</div></div>
                         </div>
                         <!-- Continue with remaining items... -->
@@ -2193,7 +1378,7 @@
                             'UI - Rapid Fire Results'
                         ])">
                             <img src="screenshots/TC005/Screenshot_TC005_Step6_UI_DatePicker.png" alt="UI - Date Picker" class="gallery-image">
-                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon"></div></div>
                             <div class="gallery-caption"><div class="gallery-caption-title">UI - Date Picker</div><div class="gallery-caption-desc">Date picker for setting due date</div></div>
                         </div>
                         <div class="gallery-item" data-category="network" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png', 'Network - PUT Move', 7, [
@@ -2232,7 +1417,7 @@
                             'UI - Rapid Fire Results'
                         ])">
                             <img src="screenshots/TC005/Screenshot_TC005_Step7_Network_PUT_Move.png" alt="Network - PUT Move" class="gallery-image">
-                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon"></div></div>
                             <div class="gallery-caption"><div class="gallery-caption-title">Network - PUT Move</div><div class="gallery-caption-desc">PUT request for moving card</div></div>
                         </div>
                         <div class="gallery-item" data-category="network" onclick="openLightbox('screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png', 'Network - PUT CheckItem', 8, [
@@ -2271,7 +1456,7 @@
                             'UI - Rapid Fire Results'
                         ])">
                             <img src="screenshots/TC005/Screenshot_TC005_Step8_Network_PUT_CheckItem.png" alt="Network - PUT CheckItem" class="gallery-image">
-                            <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+                            <div class="gallery-overlay"><div class="gallery-overlay-icon"></div></div>
                             <div class="gallery-caption"><div class="gallery-caption-title">Network - PUT CheckItem</div><div class="gallery-caption-desc">PUT request for updating checklist item</div></div>
                         </div>
                         <!-- Add remaining items... -->
@@ -2289,7 +1474,7 @@
             <div class="bug-report">
                 <div class="bug-header">
                     <div>
-                        <h1 class="bug-title">🐛 BUG_001</h1>
+                        <h1 class="bug-title">BUG_001</h1>
                         <p style="font-size: 1.3rem; margin-top: 10px;">White Background Selection Creates Blue Gradient</p>
                     </div>
                     <div class="bug-badges">
@@ -2300,34 +1485,34 @@
 
                 <div class="bug-details">
                     <div class="bug-detail-card">
-                        <div class="bug-detail-title">📍 Found In</div>
+                        <div class="bug-detail-title">Found In</div>
                         <p>TC004 - Create and Configure a New Board<br>
                         During board creation background selection process</p>
                     </div>
                     <div class="bug-detail-card">
-                        <div class="bug-detail-title">📅 Discovery Date</div>
+                        <div class="bug-detail-title">Discovery Date</div>
                         <p>30/05/2025<br>
                         During Step 8 of TC004 execution</p>
                     </div>
                     <div class="bug-detail-card">
-                        <div class="bug-detail-title">🔧 Environment</div>
+                        <div class="bug-detail-title">Environment</div>
                         <p>Chrome 137.0.7151.56<br>
                         macOS Sequoia 15.5<br>
                         Production (trello.com)</p>
                     </div>
                     <div class="bug-detail-card">
-                        <div class="bug-detail-title">👩‍💻 Reported By</div>
+                        <div class="bug-detail-title">Reported By</div>
                         <p>Patrycja Gontarek<br>
                         QA Tester</p>
                     </div>
                 </div>
 
-                <h2 class="section-header">🎯 Bug Description</h2>
-                <p style="background: #1a1a1a; padding: 20px; border-radius: 10px; border-left: 4px solid #f44336;">
+                <h2 class="section-header">Bug Description</h2>
+                <p style="background: var(--lavender-light); padding: 20px; border-radius: 10px; border-left: 4px solid #f44336; color: var(--text-primary);">
                     When a user selects the white background option during board creation, the system creates the board with a blue gradient background instead of the selected white background. This creates a discrepancy between user selection and the actual board appearance.
                 </p>
 
-                <h2 class="section-header">🔄 Steps to Reproduce</h2>
+                <h2 class="section-header">Steps to Reproduce</h2>
                 <ol style="padding-left: 25px; line-height: 1.8;">
                     <li>Log into Trello and navigate to dashboard</li>
                     <li>Click the blue "Create" button in top navigation</li>
@@ -2339,56 +1524,56 @@
                     <li>Observe the created board background</li>
                 </ol>
 
-                <h2 class="section-header">🎯 Expected Behavior</h2>
-                <p style="background: #1a4a1a; padding: 15px; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                <h2 class="section-header">Expected Behavior</h2>
+                <p style="background: var(--success-light); padding: 15px; border-radius: 8px; border-left: 4px solid #4CAF50; color: var(--text-primary);">
                     <strong>Expected:</strong> Board should be created with white/plain background as selected by user during board creation process.
                 </p>
 
-                <h2 class="section-header">❌ Actual Behavior</h2>
-                <p style="background: #4a1a1a; padding: 15px; border-radius: 8px; border-left: 4px solid #f44336;">
+                <h2 class="section-header">Actual Behavior</h2>
+                <p style="background: var(--error-light); padding: 15px; border-radius: 8px; border-left: 4px solid #f44336; color: var(--text-primary);">
                     <strong>Actual:</strong> Board is created with "gradient-bubble" blue background instead of the selected white background.
                 </p>
 
-                <h2 class="section-header">🔍 Technical Evidence</h2>
+                <h2 class="section-header">Technical Evidence</h2>
                 <div class="bug-details">
                     <div class="bug-detail-card">
-                        <div class="bug-detail-title">🖥️ UI Evidence</div>
+                        <div class="bug-detail-title">UI Evidence</div>
                         <p>• White background option was successfully selected in UI<br>
                         • Checkmark overlay confirmed selection<br>
                         • No error messages during creation process</p>
                     </div>
                     <div class="bug-detail-card">
-                        <div class="bug-detail-title">🔌 API Evidence</div>
+                        <div class="bug-detail-title">API Evidence</div>
                         <p>• POST /1/boards request sent successfully<br>
                         • API response shows: <code>background: "gradient-bubble"</code><br>
                         • Expected: <code>background: "white"</code> or similar</p>
                     </div>
                     <div class="bug-detail-card">
-                        <div class="bug-detail-title">🌐 Browser Evidence</div>
+                        <div class="bug-detail-title">Browser Evidence</div>
                         <p>• DevTools Network tab captured API mismatch<br>
                         • No JavaScript console errors<br>
                         • Background preference not preserved in request</p>
                     </div>
                 </div>
 
-                <h2 class="section-header">📊 Impact Analysis</h2>
+                <h2 class="section-header">Impact Analysis</h2>
                 <div class="bug-details">
                     <div class="bug-detail-card">
-                        <div class="bug-detail-title">👥 User Impact</div>
+                        <div class="bug-detail-title">User Impact</div>
                         <p><strong>Scope:</strong> All users creating boards with white background<br>
                         <strong>Frequency:</strong> Every time white background is selected<br>
                         <strong>Severity:</strong> Minor visual discrepancy, functionality not affected</p>
                     </div>
                     <div class="bug-detail-card">
-                        <div class="bug-detail-title">💼 Business Impact</div>
+                        <div class="bug-detail-title">Business Impact</div>
                         <p><strong>Priority:</strong> High (user experience/trust issue)<br>
                         <strong>Revenue Impact:</strong> Low<br>
                         <strong>Brand Impact:</strong> Minor consistency issue</p>
                     </div>
                 </div>
 
-                <h2 class="section-header">🔧 Root Cause Hypothesis</h2>
-                <div style="background: #1a1a1a; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h2 class="section-header">Root Cause Hypothesis</h2>
+                <div style="background: var(--lavender-light); padding: 20px; border-radius: 10px; margin: 20px 0; color: var(--text-primary);">
                     <p><strong>Likely Causes:</strong></p>
                     <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.6;">
                         <li><strong>UI/Backend Sync Issue:</strong> Frontend selection not properly transmitted to backend</li>
@@ -2398,8 +1583,8 @@
                     </ul>
                 </div>
 
-                <h2 class="section-header">💡 Recommended Solution</h2>
-                <div style="background: #1a1a1a; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h2 class="section-header">Recommended Solution</h2>
+                <div style="background: var(--lavender-light); padding: 20px; border-radius: 10px; margin: 20px 0; color: var(--text-primary);">
                     <p><strong>Investigation Steps:</strong></p>
                     <ol style="margin-top: 10px; padding-left: 25px; line-height: 1.6;">
                         <li>Verify frontend background selection value transmission</li>
@@ -2410,13 +1595,13 @@
                     </ol>
                 </div>
 
-                <h2 class="section-header">🎯 Acceptance Criteria for Fix</h2>
-                <ul style="background: #1a1a1a; padding: 20px; border-radius: 10px; margin: 20px 0; line-height: 1.8;">
-                    <li>✅ User selects white background → Board created with white background</li>
-                    <li>✅ API response matches user selection</li>
-                    <li>✅ No regression in other background options</li>
-                    <li>✅ Proper error handling if selection fails</li>
-                    <li>✅ Consistent behavior across all browsers</li>
+                <h2 class="section-header">Acceptance Criteria for Fix</h2>
+                <ul style="background: var(--lavender-light); padding: 20px; border-radius: 10px; margin: 20px 0; line-height: 1.8; color: var(--text-primary);">
+                    <li>User selects white background → Board created with white background</li>
+                    <li>API response matches user selection</li>
+                    <li>No regression in other background options</li>
+                    <li>Proper error handling if selection fails</li>
+                    <li>Consistent behavior across all browsers</li>
                 </ul>
             </div>
         </div>
@@ -2427,71 +1612,71 @@
         <div class="container">
             <button class="back-nav" onclick="showTemplate('main')">← Back to Main</button>
             
-            <div style="background: #2a2a2a; border-radius: 15px; padding: 40px; margin-bottom: 40px; border: 1px solid #3a3a3a; text-align: center;">
-                <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 20px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">📋 TEST PLAN</h1>
-                <h2 style="font-size: 2rem; margin-bottom: 30px; color: #ccc;">Trello Web Application</h2>
+            <div style="background: var(--light-card); border-radius: 15px; padding: 40px; margin-bottom: 40px; border: 1px solid var(--light-border); text-align: center; box-shadow: var(--shadow-sm);">
+                <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 20px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">TEST PLAN</h1>
+                <h2 style="font-size: 2rem; margin-bottom: 30px; color: var(--text-secondary);">Trello Web Application</h2>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; max-width: 600px; margin: 0 auto;">
-                    <div style="background: #1a1a1a; padding: 20px; border-radius: 10px;">
-                        <div style="font-size: 2rem; font-weight: bold; color: #667eea;">5</div>
-                        <div style="opacity: 0.8;">Test Cases</div>
+                    <div style="background: var(--light-bg-secondary); padding: 20px; border-radius: 10px; border: 1px solid var(--light-border);">
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--purple-accent);">5</div>
+                        <div style="color: var(--text-secondary);">Test Cases</div>
                     </div>
-                    <div style="background: #1a1a1a; padding: 20px; border-radius: 10px;">
-                        <div style="font-size: 2rem; font-weight: bold; color: #667eea;">80%</div>
-                        <div style="opacity: 0.8;">Pass Rate</div>
+                    <div style="background: var(--light-bg-secondary); padding: 20px; border-radius: 10px; border: 1px solid var(--light-border);">
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--purple-accent);">80%</div>
+                        <div style="color: var(--text-secondary);">Pass Rate</div>
                     </div>
-                    <div style="background: #1a1a1a; padding: 20px; border-radius: 10px;">
-                        <div style="font-size: 2rem; font-weight: bold; color: #667eea;">1</div>
-                        <div style="opacity: 0.8;">Bug Found</div>
+                    <div style="background: var(--light-bg-secondary); padding: 20px; border-radius: 10px; border: 1px solid var(--light-border);">
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--purple-accent);">1</div>
+                        <div style="color: var(--text-secondary);">Bug Found</div>
                     </div>
-                    <div style="background: #1a1a1a; padding: 20px; border-radius: 10px;">
-                        <div style="font-size: 2rem; font-weight: bold; color: #667eea;">7</div>
-                        <div style="opacity: 0.8;">Days</div>
+                    <div style="background: var(--light-bg-secondary); padding: 20px; border-radius: 10px; border: 1px solid var(--light-border);">
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--purple-accent);">7</div>
+                        <div style="color: var(--text-secondary);">Days</div>
                     </div>
                 </div>
             </div>
 
             <!-- Test Plan Sections -->
             <div style="display: grid; gap: 25px;">
-                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
-                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
-                        <span>🎯</span> 1. Introduction
+                <div style="background: var(--light-card); border-radius: 12px; padding: 25px; border: 1px solid var(--light-border); box-shadow: var(--shadow-sm);">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: var(--purple-accent); display: flex; align-items: center; gap: 10px;">
+                        <span></span> 1. Introduction
                     </h2>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                        <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
-                            <strong>Purpose:</strong> This test plan outlines the testing approach for Trello's web application core features
+                        <div style="background: var(--lavender-light); padding: 15px; border-radius: 5px; border-left: 4px solid var(--purple-accent);">
+                            <strong style="color: var(--text-primary);">Purpose:</strong> <span style="color: var(--text-secondary);">This test plan outlines the testing approach for Trello's web application core features</span>
                         </div>
-                        <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
-                            <strong>Scope:</strong> Free tier functionality of Trello web app (desktop browsers)
+                        <div style="background: var(--lavender-light); padding: 15px; border-radius: 5px; border-left: 4px solid var(--purple-accent);">
+                            <strong style="color: var(--text-primary);">Scope:</strong> <span style="color: var(--text-secondary);">Free tier functionality of Trello web app (desktop browsers)</span>
                         </div>
-                        <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
-                            <strong>Objective:</strong> Identify bugs, verify functionality, and ensure quality user experience
+                        <div style="background: var(--lavender-light); padding: 15px; border-radius: 5px; border-left: 4px solid var(--purple-accent);">
+                            <strong style="color: var(--text-primary);">Objective:</strong> <span style="color: var(--text-secondary);">Identify bugs, verify functionality, and ensure quality user experience</span>
                         </div>
                     </div>
                 </div>
 
-                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
-                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
-                        <span>🧪</span> 2. Test Items
+                <div style="background: var(--light-card); border-radius: 12px; padding: 25px; border: 1px solid var(--light-border); box-shadow: var(--shadow-sm);">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: var(--purple-accent); display: flex; align-items: center; gap: 10px;">
+                        <span></span> 2. Test Items
                     </h2>
-                    <ul style="padding-left: 20px; line-height: 1.8;">
-                        <li><strong>User Authentication</strong> (Login/Logout)</li>
-                        <li><strong>User Registration</strong> (Duplicate email validation)</li>
-                        <li><strong>Board Management</strong> (Create and Configure)</li>
-                        <li><strong>Card Functionality</strong> (Lifecycle and data persistence)</li>
+                    <ul style="padding-left: 20px; line-height: 1.8; color: var(--text-secondary);">
+                        <li><strong style="color: var(--text-primary);">User Authentication</strong> (Login/Logout)</li>
+                        <li><strong style="color: var(--text-primary);">User Registration</strong> (Duplicate email validation)</li>
+                        <li><strong style="color: var(--text-primary);">Board Management</strong> (Create and Configure)</li>
+                        <li><strong style="color: var(--text-primary);">Card Functionality</strong> (Lifecycle and data persistence)</li>
                     </ul>
                 </div>
 
-                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
-                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
-                        <span>🔬</span> 3. Testing Approach
+                <div style="background: var(--light-card); border-radius: 12px; padding: 25px; border: 1px solid var(--light-border); box-shadow: var(--shadow-sm);">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: var(--purple-accent); display: flex; align-items: center; gap: 10px;">
+                        <span></span> 3. Testing Approach
                     </h2>
-                    <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea; margin-bottom: 15px;">
-                        <strong>Testing Type:</strong> Manual Functional Testing<br>
-                        <strong>Testing Levels:</strong> System Testing
+                    <div style="background: var(--lavender-light); padding: 15px; border-radius: 5px; border-left: 4px solid var(--purple-accent); margin-bottom: 15px; color: var(--text-secondary);">
+                        <strong style="color: var(--text-primary);">Testing Type:</strong> Manual Functional Testing<br>
+                        <strong style="color: var(--text-primary);">Testing Levels:</strong> System Testing
                     </div>
-                    <strong>Testing Methods:</strong>
-                    <ul style="padding-left: 20px; line-height: 1.8; margin-top: 10px;">
+                    <strong style="color: var(--text-primary);">Testing Methods:</strong>
+                    <ul style="padding-left: 20px; line-height: 1.8; margin-top: 10px; color: var(--text-secondary);">
                         <li>Positive testing (valid inputs)</li>
                         <li>Negative testing (invalid inputs)</li>
                         <li>Boundary value testing</li>
@@ -2502,54 +1687,54 @@
                     </ul>
                 </div>
 
-                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
-                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
-                        <span>📦</span> 4. Test Deliverables
+                <div style="background: var(--light-card); border-radius: 12px; padding: 25px; border: 1px solid var(--light-border); box-shadow: var(--shadow-sm);">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: var(--purple-accent); display: flex; align-items: center; gap: 10px;">
+                        <span></span> 4. Test Deliverables
                     </h2>
-                    <strong>Test Cases (5):</strong>
+                    <strong style="color: var(--text-primary);">Test Cases (5):</strong>
                     <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
-                        <li><a href="#" onclick="showTemplate('tc001')" style="color: #4CAF50; text-decoration: none;">✅ TC001: Verify successful login with valid credentials (Pass)</a></li>
-                        <li><a href="#" onclick="showTemplate('tc002')" style="color: #4CAF50; text-decoration: none;">✅ TC002: Verify registration with already registered email (Pass)</a></li>
-                        <li><a href="#" onclick="showTemplate('tc003')" style="color: #4CAF50; text-decoration: none;">✅ TC003: Verify logout functionality (Pass)</a></li>
-                        <li><a href="#" onclick="showTemplate('tc004')" style="color: #FF9800; text-decoration: none;">⚠️ TC004: Create and Configure a New Board (Partial Pass - 1 bug)</a></li>
-                        <li><a href="#" onclick="showTemplate('tc005')" style="color: #4CAF50; text-decoration: none;">✅ TC005: Card lifecycle management and data persistence (Pass)</a></li>
+                        <li><a href="#" onclick="showTemplate('tc001')" style="color: var(--success-green); text-decoration: none;">TC001: Verify successful login with valid credentials (Pass)</a></li>
+                        <li><a href="#" onclick="showTemplate('tc002')" style="color: var(--success-green); text-decoration: none;">TC002: Verify registration with already registered email (Pass)</a></li>
+                        <li><a href="#" onclick="showTemplate('tc003')" style="color: var(--success-green); text-decoration: none;">TC003: Verify logout functionality (Pass)</a></li>
+                        <li><a href="#" onclick="showTemplate('tc004')" style="color: var(--warning-orange); text-decoration: none;">TC004: Create and Configure a New Board (Partial Pass - 1 bug)</a></li>
+                        <li><a href="#" onclick="showTemplate('tc005')" style="color: var(--success-green); text-decoration: none;">TC005: Card lifecycle management and data persistence (Pass)</a></li>
                     </ul>
-                    
-                    <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; margin-top: 20px; border-left: 4px solid #f44336;">
-                        <strong>Bug Reports:</strong><br>
-                        <a href="#" onclick="showTemplate('bug001')" style="color: #f44336; text-decoration: none;">🐛 BUG_001: White Background Selection Creates Blue Gradient</a>
+
+                    <div style="background: var(--error-light); padding: 15px; border-radius: 5px; margin-top: 20px; border-left: 4px solid var(--error-red);">
+                        <strong style="color: var(--text-primary);">Bug Reports:</strong><br>
+                        <a href="#" onclick="showTemplate('bug001')" style="color: var(--error-red); text-decoration: none;">BUG_001: White Background Selection Creates Blue Gradient</a>
                     </div>
                 </div>
 
-                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
-                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
-                        <span>📊</span> 5. Test Summary
+                <div style="background: var(--light-card); border-radius: 12px; padding: 25px; border: 1px solid var(--light-border); box-shadow: var(--shadow-sm);">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: var(--purple-accent); display: flex; align-items: center; gap: 10px;">
+                        <span></span> 5. Test Summary
                     </h2>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                        <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
-                            <strong>Total Test Cases Planned:</strong> 5<br>
-                            <strong>Test Cases Executed:</strong> 5<br>
-                            <strong>Pass:</strong> 4<br>
-                            <strong>Partial Pass:</strong> 1
+                        <div style="background: var(--lavender-light); padding: 15px; border-radius: 5px; border-left: 4px solid var(--purple-accent); color: var(--text-secondary);">
+                            <strong style="color: var(--text-primary);">Total Test Cases Planned:</strong> 5<br>
+                            <strong style="color: var(--text-primary);">Test Cases Executed:</strong> 5<br>
+                            <strong style="color: var(--text-primary);">Pass:</strong> 4<br>
+                            <strong style="color: var(--text-primary);">Partial Pass:</strong> 1
                         </div>
-                        <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
-                            <strong>Fail:</strong> 0<br>
-                            <strong>Bugs Found:</strong> 1 (Medium severity, High priority)<br>
-                            <strong>Overall Pass Rate:</strong> 80%
+                        <div style="background: var(--lavender-light); padding: 15px; border-radius: 5px; border-left: 4px solid var(--purple-accent); color: var(--text-secondary);">
+                            <strong style="color: var(--text-primary);">Fail:</strong> 0<br>
+                            <strong style="color: var(--text-primary);">Bugs Found:</strong> 1 (Medium severity, High priority)<br>
+                            <strong style="color: var(--text-primary);">Overall Pass Rate:</strong> 80%
                         </div>
                     </div>
                 </div>
 
-                <div style="background: #2a2a2a; border-radius: 12px; padding: 25px; border: 1px solid #3a3a3a;">
-                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: #667eea; display: flex; align-items: center; gap: 10px;">
-                        <span>✅</span> 6. Approval
+                <div style="background: var(--light-card); border-radius: 12px; padding: 25px; border: 1px solid var(--light-border); box-shadow: var(--shadow-sm);">
+                    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; color: var(--purple-accent); display: flex; align-items: center; gap: 10px;">
+                        <span></span> 6. Approval
                     </h2>
-                    <div style="background: #1a1a1a; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
-                        <strong>Created by:</strong> Patrycja Gontarek<br>
-                        <strong>Date:</strong> 26/05/2025<br>
-                        <strong>Last Updated:</strong> 03/06/2025<br>
-                        <strong>Version:</strong> 1.2<br>
-                        <strong>Duration:</strong> 7 days (27/05 - 03/06/2025)
+                    <div style="background: var(--lavender-light); padding: 15px; border-radius: 5px; border-left: 4px solid var(--purple-accent); color: var(--text-secondary);">
+                        <strong style="color: var(--text-primary);">Created by:</strong> Patrycja Gontarek<br>
+                        <strong style="color: var(--text-primary);">Date:</strong> 26/05/2025<br>
+                        <strong style="color: var(--text-primary);">Last Updated:</strong> 03/06/2025<br>
+                        <strong style="color: var(--text-primary);">Version:</strong> 1.2<br>
+                        <strong style="color: var(--text-primary);">Duration:</strong> 7 days (27/05 - 03/06/2025)
                     </div>
                 </div>
             </div>
